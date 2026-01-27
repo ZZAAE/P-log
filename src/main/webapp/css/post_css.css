@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    padding-top: 100px;
+}
+
+.all {
+    margin:auto;
+    width: 50%;
+    max-width: 800px;
+}
+
+#var {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    max-width: 800px;
+    height: 80px;
+    background: #000000;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+#var p {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    flex: 1;
+    text-align: left;
+}
+
+#var .menu {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+#var .upload {
+    width: 50px;
+    height: 50px;
+    background: red;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#var .menu {
+    margin-right: auto;
+}
+
+#var .upload {
+    margin-left: auto;
+}
+
+#var .menu:hover,
+#var .upload:hover {
+    background: #f5f5f5;
+    transform: scale(1.1);
+}
+
+#emotion {
+    padding: 30px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.emoji {
+    font-size: 36px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px;
+    margin: 0 20px;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji:hover {
+    background: #f5f5f5;
+    transform: scale(1.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.emoji:active {
+    transform: scale(1.1);
+}
+
+#img {
+    background: white;
+    padding: 30px;
+    text-align: center;
+}
+
+#img img {
+    max-width: 100%;
+    height: auto;
+    width: 80%;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+#text {
+    padding: 30px;
+    background: white;
+}
+
+#text textarea {
+    width: 100%;
+    min-height: 450px;
+    padding: 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.3s ease;
+    resize: none;
+    line-height: 2.2;
+    background-size: 100% 2.2em;
+    background-position: 0 8px;
+    color: #333333;
+    letter-spacing: 0.5px;
+}
+
+#text textarea:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+#text textarea::placeholder {
+    color: #999999;
+}
