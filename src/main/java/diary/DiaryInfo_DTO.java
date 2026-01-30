@@ -1,4 +1,4 @@
-package calender;
+package diary;
 
 
 public class DiaryInfo_DTO {

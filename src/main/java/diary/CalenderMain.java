@@ -1,4 +1,4 @@
-package calender;
+package diary;
 
 
 import java.io.IOException;
