@@ -1,3 +1,4 @@
+package user;
 
 public class UserinfoDTO {
 	private String user_id;
