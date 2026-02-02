@@ -1,18 +1,10 @@
 package advise;
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 public class AdviseinfoDTO {
 	private int advise_id;
 	private int advise_type;
 	private String advise_content;
-<<<<<<< HEAD
-
-=======
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 	
 	public int getAdvise_id() {
 		return advise_id;
@@ -33,9 +25,5 @@ public class AdviseinfoDTO {
 		this.advise_content = advise_content;
 	}
 	
-<<<<<<< HEAD
-
-=======
 	
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 }

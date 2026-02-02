@@ -1,19 +1,12 @@
 package user;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 public class UserinfoDTO {
 	private String user_id;
 	private String user_pw;
 	private String gender;
 	private String phone_number;
 	private String birthday;
-<<<<<<< HEAD
-
-=======
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 	
 	public String getUser_id() {
 		return user_id;
@@ -46,8 +39,5 @@ public class UserinfoDTO {
 		this.birthday = birthday;
 	}
 	
-<<<<<<< HEAD
-=======
 	
->>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 }
