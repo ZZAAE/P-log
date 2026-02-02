@@ -1,5 +1,6 @@
 package image;
 
+
 public class ImageinfoDTO {
 	private String image_id;
 	private String image_path;
@@ -16,4 +17,6 @@ public class ImageinfoDTO {
 	public void setImage_path(String image_path) {
 		this.image_path = image_path;
 	}
+	
+	
 }
