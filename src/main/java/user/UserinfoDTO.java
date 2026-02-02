@@ -1,11 +1,13 @@
 package user;
 
+
 public class UserinfoDTO {
 	private String user_id;
 	private String user_pw;
 	private String gender;
 	private String phone_number;
 	private String birthday;
+	
 	public String getUser_id() {
 		return user_id;
 	}
