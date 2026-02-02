@@ -1,4 +1,3 @@
-package image;
 
 
 public class ImageinfoDTO {

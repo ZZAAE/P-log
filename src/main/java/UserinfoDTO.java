@@ -1,4 +1,3 @@
-package user;
 
 
 public class UserinfoDTO {
