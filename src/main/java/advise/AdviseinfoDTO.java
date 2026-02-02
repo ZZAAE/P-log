@@ -1,3 +1,4 @@
+package advise;
 
 public class AdviseinfoDTO {
 	private int advise_id;
