@@ -1,7 +1,10 @@
 package image;
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 public class ImageinfoDTO {
 	private String image_id;
 	private String image_path;
@@ -18,4 +21,9 @@ public class ImageinfoDTO {
 	public void setImage_path(String image_path) {
 		this.image_path = image_path;
 	}
+<<<<<<< HEAD
+=======
+	
+	
+>>>>>>> d6855bded943809aed16510354896e34d81b9fb2
 }
