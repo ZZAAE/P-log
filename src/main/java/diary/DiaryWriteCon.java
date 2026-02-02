@@ -9,6 +9,7 @@ import java.io.OutputStream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import javax.servlet.http.Part;
 import image.ImageDAO;
 import image.ImageinfoDTO;
 
-
+@MultipartConfig
 @WebServlet("/DiaryWriteProc.do")
 public class DiaryWriteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
