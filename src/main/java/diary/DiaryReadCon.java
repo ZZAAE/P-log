@@ -2,6 +2,8 @@ package diary;
 
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +36,13 @@ public class DiaryReadCon extends HttpServlet {
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		
 		DiaryinfoDTO bean = dDao.getDiaryInfo(diary_id);
-		String imagePath = iDao.getImageinfoPath(bean.getImage_id());
+		String image_path = iDao.getImageinfoPath(bean.getImage_id());
+		
+		request.setAttribute("bean", bean);
+		request.setAttribute("image_path", image_path);
+		
+		RequestDispatcher dis = request.getRequestDispatcher("");
+		dis.forward(request, response);
 	}
 
 }

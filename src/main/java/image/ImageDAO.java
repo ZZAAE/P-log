@@ -27,13 +27,13 @@ public class ImageDAO {
 		}
 	}// getCon
 	
-	public void insertImageinfo(String id, String path) {
+	public void insertImageinfo(ImageinfoDTO bean) {
 		connect();
 		String query = "insert into imageinfo values(?,?)";		
 		try {
 			pstmt = con.prepareStatement(query);
-			pstmt.setString(1, id);
-			pstmt.setString(2, path);
+			pstmt.setString(1, bean.getImage_id());
+			pstmt.setString(2, bean.getImage_path());
 			pstmt.executeUpdate();
 			con.close();
 		} catch (Exception e) {
