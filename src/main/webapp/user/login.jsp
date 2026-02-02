@@ -7,9 +7,19 @@
 <title>Login</title>
 </head>
 <body>
+<%
+    String msg = (String) request.getAttribute("msg");
+    if (msg != null) {
+%>
+<script>
+    alert("<%= msg %>");
+</script>
+<%
+    }
+%>
 <center>
 		<h2>로그인</h2>
-		<form action="loginproc.jsp" method="post">
+		<form action="loginCon.do" method="post">
 		<table align="center" width="300" border="1">
 			<tr height="40">
 				<td width="120" align="center">아이디</td>

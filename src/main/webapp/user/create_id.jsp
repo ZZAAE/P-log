@@ -47,8 +47,8 @@
 
 
 				<tr height="40">
-					<td width="600" align="center" colspan="2"><input
-						type="submit" value="회원가입"> <input type="reset" value="취소">
+					<td width="600" align="center" colspan="2">
+					<input type="submit" value="회원가입"> <input type="reset" value="취소"> <input type="button" value="로그인" onclick="location.href='login.jsp'"> 
 					</td>
 				</tr>
 			</table>
