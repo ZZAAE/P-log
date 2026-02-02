@@ -1,3 +1,5 @@
+<%@page import="diary.DiaryInfo_DTO"%>
+<%@page import="java.util.Vector"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -8,16 +10,21 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Calender Main Page!</title>
-<link rel="stylesheet" href="../css/calenderMain_css.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calenderMain_css.css">
 </head>
 <body>
 <%
-// 세션에서 ID 받아오기
+// 세션에서 ID, Calendermain.do에서 벡터, Preview.do에서 preview 받아오기
 String user_id = (String)session.getAttribute("user_id");
+user_id = "test"; // 임시 테스트용
+Vector<DiaryInfo_DTO> bean = (Vector<DiaryInfo_DTO>)request.getAttribute("bean");
+DiaryInfo_DTO preview = (DiaryInfo_DTO)session.getAttribute("preview");
 
 // 선택된 날짜 파라미터 받기
 String selectedDate = request.getParameter("selectedDate");
 boolean showDiarySection = (selectedDate != null && !selectedDate.trim().isEmpty());
+
+
 
 // 캘린더 객체 생성
 Calendar cal = Calendar.getInstance();
@@ -59,7 +66,7 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
 %>
 
 <div class="container">
-    <!-- 왼쪽 일기 내용 영역 -->
+    <!-- 왼쪽 일기 내용 영역 (프리뷰) -->
     <div id="diarySection" class="diary-section <%=showDiarySection ? "active" : ""%>">
         <div class="diary-header">
             <h2 id="selectedDate"><%=showDiarySection ? selectedDate : "날짜 선택"%></h2>
@@ -70,11 +77,16 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
             <div class="emotion-display">
                 <span id="diaryEmotion" class="emotion-icon">
                     <%
-                    if(showDiarySection) {
-                        // TODO: DB에서 해당 날짜의 감정 이모티콘 가져오기
-                        out.print("😊");
+                    
+                    if (preview.getContent() != null) {
+                        int emo = preview.getEmotion(); // getter 호출
+                        if (emo == 1) out.print("😊1");
+                        else if (emo == 2) out.print("😊2");
+                        else if (emo == 3) out.print("😊3");
+                        else if (emo == 4) out.print("😊4");
+                        else if (emo == 5) out.print("😊5");
                     } else {
-                        out.print("📅");
+                        out.print("일기가 없습니다");
                     }
                     %>
                 </span>
@@ -83,11 +95,15 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
             <div class="diary-text">
                 <p id="diaryContent">
                     <%
-                    if(showDiarySection) {
+                    if(selectedDiary != null) {
+                    if(selectedDiary.getContent() != null) {
                         // TODO: DB에서 해당 날짜의 일기 내용 가져오기
-                        out.print(selectedDate + " 일자의 일기.");
-                    } else {
-                        out.print("날짜를 클릭하여 일기를 확인하세요.");
+                        out.print(selectedDate + " 일자의 일기. \n" + selectedDiary.getContent());
+                    }else{
+                    	out.print("일기 데이터는 있는데 내용이 없어요.");
+                    }
+                    }else {
+                        out.print("일기가 없어요.");
                     }
                     %>
                 </p>
@@ -110,10 +126,10 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
     <div class="wrapper <%=showDiarySection ? "shifted" : ""%>">
     <header>
         <div class="nav">
-          <a href="calenderMain.jsp?year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
-          <p class="current-date"><%=year%>년 <%=month%>월</p>
-          <a href="calenderMain.jsp?year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
-        </div>
+		  <a href="${pageContext.request.contextPath}/CalenderMain.do?user_id=<%=user_id%>&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
+		  <p class="current-date"><%=year%>년 <%=month%>월</p>
+		  <a href="${pageContext.request.contextPath}/CalenderMain.do?user_id=<%=user_id%>&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
+		</div>
       </header>
       <div class="calendar">
       <table>
@@ -146,27 +162,38 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           
           // 현재 월의 날짜 출력
           int dayCount = week - 1;
-          for(int i = 1; i <= lastDay; i++) {
-              // 오늘 날짜 체크
-              String todayClass = "";
-              if(year == ty && month == tm && i == td) {
-                  todayClass = " active";
+      	  for(int i = 1; i <= lastDay; i++) {
+          String todayClass = (year == ty && month == tm && i == td) ? " active" : "";
+          
+          String Fmonth = month < 10 ? "0" + month : String.valueOf(month);
+          String Fday = i < 10 ? "0" + i : String.valueOf(i);
+          String Cdate = year + "-" + Fmonth + "-" + Fday;
+
+          // 1. 해당 날짜에 일기가 있는지 자바 코드로 먼저 검색
+          diary.DiaryInfo_DTO foundDto = null;
+          if(bean != null) {
+              for(diary.DiaryInfo_DTO dto : bean) {
+                  // DB 날짜 포맷에 맞춰 비교 (String인 경우)
+                  if(dto.getCreate_date().equals(Cdate)) {
+                      foundDto = dto;
+                      break; 
+                  }
               }
-              
-              // 날짜를 YYYY-MM-DD 형식으로 변환
-              String Fmonth = month < 10 ? "0" + month : String.valueOf(month);
-              String Fday = i < 10 ? "0" + i : String.valueOf(i);
-              String Cdate = year + "-" + Fmonth + "-" + Fday;
-              
-              //if(Cdate.equals(bean.create_date)){
-              %> 
-              <td class="<%=todayClass%>">
-              	<a href="calenderMain.jsp?id=<%=user_id %>&selectedDate=<%=Cdate%>">
-              		<%= i %>
-              	</a>
+          }
+
+          // 2. 결과에 따라 <td> 하나만 출력
+          if(foundDto != null) {
+              // 일기가 있는 날 %>
+              <td class="emotion_<%=foundDto.getEmotion()%><%=todayClass%>">
+                  <a href="${pageContext.request.contextPath}/Preview.do?user_id=<%=user_id%>&selectedDate=<%=Cdate%>"><%=i%></a>
               </td>
-              <%
-              //}
+          <% } else {
+              // 일기가 없는 날 %>
+              <td class="no_diary<%=todayClass%>">
+                  <a href="${pageContext.request.contextPath}/Preview.do?user_id=<%=user_id%>&selectedDate=<%=Cdate%>"><%=i%></a>
+              </td>
+          <% } // if-else
+              
               dayCount++;
               
               // 토요일이면 다음 줄로
