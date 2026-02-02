@@ -1,5 +1,6 @@
 package diary;
 
+
 public class DiaryinfoDTO {
 	private int diary_id;
 	private String user_id;
@@ -51,4 +52,8 @@ public class DiaryinfoDTO {
 	public void setCreate_date(String create_date) {
 		this.create_date = create_date;
 	}
+
+	
+	
+
 }
