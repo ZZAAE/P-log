@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import image.ImageDAO;
+
 @WebServlet("/DiaryDeleteProc.do")
 public class DiaryDeleteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -26,13 +28,17 @@ public class DiaryDeleteCon extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		
 		DiaryDAO dDao = new DiaryDAO();
+		ImageDAO iDao = new ImageDAO();
 		
 		String user_id = request.getParameter("user_id");
 		String create_date = request.getParameter("create_date");
-		
+				
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		
+		DiaryinfoDTO bean = dDao.getDiaryInfo(diary_id);
+		
 		dDao.deleteDirayInfo(diary_id);
+		iDao.deleteImageinfo(bean.getImage_id());
 		
 		RequestDispatcher dis = request.getRequestDispatcher("");
 		

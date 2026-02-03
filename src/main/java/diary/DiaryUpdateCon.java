@@ -6,7 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -49,8 +54,8 @@ public class DiaryUpdateCon extends HttpServlet {
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
 		String previousImage_id = image_id;
+		String previousImage_path = iDao.getImageinfoPath(previousImage_id);
 		
-		String image_path = iDao.getImageinfoPath(image_id);
 		
 		Part imgFile = request.getPart("file");
 		String path = "../resources/img";
@@ -85,9 +90,19 @@ public class DiaryUpdateCon extends HttpServlet {
 				ImageinfoDTO imgBean = new ImageinfoDTO();
 				imgBean.setImage_id(fileName);
 				imgBean.setImage_path(path+"/"+fileName);
-				iDao.insertImageinfo(imgBean);
+				iDao.updateImageinfo(imgBean);
 				
-				iDao.deleteImageinfo(previousImage_id);
+				//이미지 수정후 이전 파일 삭제
+				Path oldFilePath = Paths.get(previousImage_path);
+				try {
+					Files.delete(oldFilePath);
+				}
+				catch(NoSuchFileException e){
+					System.out.println("삭제하려는 파일이 존재하지 않음");
+				}
+				catch (IOException e) {            
+					e.printStackTrace();
+				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -104,9 +119,12 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setContent(content);
 		bean.setImage_id(image_id);
 		//bean.setCreate_date(create_date);
-		
-		
+				
 		dDao.updateDiaryInfo(bean);
+		
+		request.setAttribute("user_id", user_id);
+		RequestDispatcher dis = request.getRequestDispatcher("");
+		dis.forward(request, response);
 	}
 
 }
