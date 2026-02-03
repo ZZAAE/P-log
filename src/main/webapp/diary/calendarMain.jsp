@@ -10,7 +10,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Calendar Main Page!</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calenderMain_css.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calendar.css">
 </head>
 <body>
 <%
@@ -46,9 +46,9 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
     <div class="wrapper <%=showDiarySection ? "shifted" : ""%>">
     <header>
         <div class="nav">
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
+		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
 		  <p class="current-date"><%=year%>년 <%=month%>월</p>
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
+		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
 		</div>
       </header>
       <div class="calendar">
@@ -105,12 +105,12 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           if(foundDto != null) {
               // 일기가 있는 날 %>
               <td class="emotion_<%=foundDto.getEmotion()%><%=todayClass%>">
-                  <a href="${pageContext.request.contextPath}/Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
+                  <a href="Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
               </td>
           <% } else {
               // 일기가 없는 날 %>
               <td class="no_diary<%=todayClass%>">
-                  <a href="${pageContext.request.contextPath}/Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
+                  <a href="Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
               </td>
           <% } // if-else
               
