@@ -1,10 +1,11 @@
 package advise;
 
+
+
 public class AdviseinfoDTO {
 	private int advise_id;
 	private int advise_type;
 	private String advise_content;
-	
 	
 	public int getAdvise_id() {
 		return advise_id;
@@ -23,10 +24,6 @@ public class AdviseinfoDTO {
 	}
 	public void setAdvise_content(String advise_content) {
 		this.advise_content = advise_content;
-	}
-	public String getAdviseininfo(int emotion) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	

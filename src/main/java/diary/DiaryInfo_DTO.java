@@ -1,7 +1,8 @@
 package diary;
 
 
-public class DiaryinfoDTO {
+public class DiaryInfo_DTO {
+	// DIARYINFO 테이블 불러오기
 	private int diary_id;
 	private String user_id;
 	private int advise_id;
@@ -52,4 +53,6 @@ public class DiaryinfoDTO {
 	public void setCreate_date(String create_date) {
 		this.create_date = create_date;
 	}
+	
+	
 }
