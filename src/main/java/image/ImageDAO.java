@@ -62,7 +62,16 @@ public class ImageDAO {
 	public void updateImageinfo(ImageinfoDTO bean) {
 		connect();
 		String path = "";
-		String query = "update image_path from imageinfo where image_id=?";
+		String query = "update imageinfo set image_path=? where image_id=?";
+		try {
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, bean.getImage_path());
+			pstmt.setString(2, bean.getImage_id());
+			pstmt.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteImageinfo(String image_id) {
