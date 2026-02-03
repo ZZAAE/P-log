@@ -1,4 +1,4 @@
-package dairy;
+package diary;
 
 public class DiaryinfoDTO {
 	private int diary_id;
