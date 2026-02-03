@@ -49,6 +49,7 @@
 				<tr height="40">
 					<td width="600" align="center" colspan="2">
 						<input type="submit" value="수정하기" >
+						
 						<input type="button" value="취소" onclick="location.href='/user/main.jsp'">
 					</td>
 				</tr>
