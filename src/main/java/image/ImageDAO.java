@@ -61,6 +61,8 @@ public class ImageDAO {
 	
 	public void updateImageinfo(ImageinfoDTO bean) {
 		connect();
+
+		String path = "";
 		String query = "update imageinfo set image_path=? where image_id=?";
 		try {
 			pstmt = con.prepareStatement(query);
