@@ -18,7 +18,6 @@
 					</td>
 				</tr>
 
-				<!-- ✅ 현재 비밀번호 확인용 -->
 				<tr>
 					<td>현재 비밀번호</td>
 					<td><input type="password" name="current_pw" /></td>
@@ -49,7 +48,7 @@
 				<tr height="40">
 					<td width="600" align="center" colspan="2">
 						<input type="submit" value="수정하기" >
-						
+						<input type="button" values="삭제하기" onclick="location.href='UserinfoDeleteCon.do?num=${bean.user_id}'" />
 						<input type="button" value="취소" onclick="location.href='/user/main.jsp'">
 					</td>
 				</tr>
