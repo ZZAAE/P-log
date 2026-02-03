@@ -86,6 +86,7 @@ public class DiaryWriteCon extends HttpServlet {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 		
