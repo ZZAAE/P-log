@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
-public class Calendar_DAO {
+public class CalendarDAO {
 	String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	String user = "ProjectTester";
 	String pass = "12345";
@@ -27,8 +27,8 @@ public class Calendar_DAO {
 	}
 	
 	// 유저 아이디 기반으로 일기가 작성된 일자와 기분 검색 (캘린더 표시용)
-	public Vector<DiaryInfo_DTO> select_Diary_inDate(String id) {
-	    Vector<DiaryInfo_DTO> v = new Vector<DiaryInfo_DTO>();
+	public Vector<DiaryinfoDTO> select_Diary_inDate(String id) {
+	    Vector<DiaryinfoDTO> v = new Vector<DiaryinfoDTO>();
 	    try {
 	        System.out.println("=== select_Diary_inDate 시작 ===");
 	        System.out.println("조회할 user_id: " + id);
@@ -43,7 +43,7 @@ public class Calendar_DAO {
 	        
 	        int count = 0;
 	        while(rs.next()) {
-	            DiaryInfo_DTO dDTO = new DiaryInfo_DTO();
+	            DiaryinfoDTO dDTO = new DiaryinfoDTO();
 	            String date = rs.getString(1);
 	            int emotion = rs.getInt(2);
 	            
@@ -66,8 +66,8 @@ public class Calendar_DAO {
 	}
 
 	// select_Diary_Preview 수정
-	public DiaryInfo_DTO select_Diary_Preview(String id, String date) {
-	    DiaryInfo_DTO dDTO = new DiaryInfo_DTO();
+	public DiaryinfoDTO select_Diary_Preview(String id, String date) {
+	    DiaryinfoDTO dDTO = new DiaryinfoDTO();
 	    dDTO = null;
 	    try {
 	        System.out.println("=== select_Diary_Preview 시작 ===");
@@ -85,7 +85,7 @@ public class Calendar_DAO {
 	        rs = pstmt.executeQuery();
 
 	        if (rs.next()) {
-	        	dDTO = new DiaryInfo_DTO();
+	        	dDTO = new DiaryinfoDTO();
 	            dDTO.setDiary_id(rs.getInt(1));
 	            dDTO.setEmotion(rs.getInt(2));
 	            dDTO.setContent(rs.getString(3));
