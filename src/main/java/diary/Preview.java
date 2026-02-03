@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/Preview.do")
 public class Preview extends HttpServlet {
@@ -23,17 +24,20 @@ public class Preview extends HttpServlet {
 	   }
 
 	   protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		   String user_id = request.getParameter("user_id");
-		   String selectedDate = request.getParameter("selectedDate");
-		   Calender_DAO cdao = new Calender_DAO();
-		   DiaryInfo_DTO bean = cdao.select_Diary_Preview(user_id, selectedDate);
+		   request.setCharacterEncoding("UTF-8");
+		    
+		    HttpSession session = request.getSession();
+			String user_id = (String)session.getAttribute("user_id");
+		    String selectedDate = request.getParameter("selectedDate");
+		    Calendar_DAO cdao = new Calendar_DAO();
+		    DiaryInfo_DTO preview = cdao.select_Diary_Preview(user_id, selectedDate);
 		   
 			// JSP저장:calenderMain.jsp에서 사용할 데이터를 저장(request);
-		   request.setAttribute("user_id", user_id);
-		   request.setAttribute("preview", bean);
+		    request.setAttribute("preview", preview);
+		    request.setAttribute("selectedDate", selectedDate);
 
 			// JSP로 포워딩
-		   RequestDispatcher dis = request.getRequestDispatcher("/diary/calenderMain.jsp");
+		   RequestDispatcher dis = request.getRequestDispatcher("/diary/preview.jsp");
 			dis.forward(request, response);
 	   }
 
