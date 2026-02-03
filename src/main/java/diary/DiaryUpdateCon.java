@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import image.ImageDAO;
+import image.ImageinfoDTO;
 
 @MultipartConfig
 @WebServlet("/DiaryUpdateProc.do")
@@ -36,6 +37,7 @@ public class DiaryUpdateCon extends HttpServlet {
 		//int diary_id = Integer.parseInt(request.getParameter("diary_id"));
 		String user_id = request.getParameter("user_id");
 		//int advise_id = Integer.parseInt(request.getParameter("advise_id"));
+		int advise_id = 1001; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		//String image_id = request.getParameter("image_id");
@@ -83,14 +85,21 @@ public class DiaryUpdateCon extends HttpServlet {
 			}
 		}
 		
+		if(image_id != previousImage_id) {
+			ImageinfoDTO imgBean = new ImageinfoDTO();
+			imgBean.setImage_id(fileName);
+			imgBean.setImage_path(path+"/"+fileName);
+			iDao.insertImageinfo(imgBean);
+		}
+		
 		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
 		bean.setDiary_id(diary_id);
 		bean.setUser_id(user_id);
-		//bean.setAdvise_id(advise_id);
+		bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
 		bean.setContent(content);
-		//bean.setImage_id(image_id);
+		bean.setImage_id(image_id);
 		//bean.setCreate_date(create_date);
 		
 		
