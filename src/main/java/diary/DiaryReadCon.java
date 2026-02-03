@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import image.ImageDAO;
 
-@WebServlet("/DiaryReadProc.do")
+@WebServlet("/DiaryReadCon.do")
 public class DiaryReadCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

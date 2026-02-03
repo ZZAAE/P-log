@@ -20,7 +20,7 @@ import image.ImageDAO;
 import image.ImageinfoDTO;
 
 @MultipartConfig
-@WebServlet("/DiaryWriteProc.do")
+@WebServlet("/DiaryWriteCon.do")
 public class DiaryWriteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -36,10 +36,7 @@ public class DiaryWriteCon extends HttpServlet {
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
-		//DB단에서 시퀀스로 업데이트 해야함
-		//int diary_id = Integer.parseInt(request.getParameter("diary_id"));
 		String user_id = request.getParameter("user_id");
-		//int advise_id = Integer.parseInt(request.getParameter("advise_id"));
 		int advise_id = 1001; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
@@ -56,7 +53,7 @@ public class DiaryWriteCon extends HttpServlet {
 		OutputStream outputStream = null;
 		
 		
-		if(!fileName.equals("")) {
+		if(!imgFile.getSubmittedFileName().equals("")) {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
