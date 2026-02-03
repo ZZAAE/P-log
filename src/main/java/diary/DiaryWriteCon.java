@@ -36,7 +36,8 @@ public class DiaryWriteCon extends HttpServlet {
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		
-		int diary_id = Integer.parseInt(request.getParameter("diary_id"));
+		//DB단에서 시퀀스로 업데이트 해야함
+		//int diary_id = Integer.parseInt(request.getParameter("diary_id"));
 		String user_id = request.getParameter("user_id");
 		int advise_id = Integer.parseInt(request.getParameter("advise_id"));
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
@@ -78,7 +79,6 @@ public class DiaryWriteCon extends HttpServlet {
 		
 		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
-		bean.setDiary_id(diary_id);
 		bean.setUser_id(user_id);
 		bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
@@ -94,7 +94,8 @@ public class DiaryWriteCon extends HttpServlet {
 		imgBean.setImage_path(path+"/"+fileName);
 		
 		ImageDAO iDao = new ImageDAO();
-		iDao.insertImageinfo(imgBean);
+		iDao.insertImageinfo(imgBean);		
+		
 		
 		request.setAttribute("user_id", user_id);
 		
