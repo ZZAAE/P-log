@@ -9,8 +9,9 @@
 <body>
 <h2>로그인 성공</h2>
 
-<form action="userinfoUpdateCon.do">
-	<input type="button"  value="정보수정" onclick="userinfo_update.jsp"/>
+<form action="UserinfoUpdateCon.do">
+	<input type="button" value="정보수정"
+       onclick="location.href='<%=request.getContextPath()%>/UserinfoList.do'">
 </form>
 </body>
 </html>

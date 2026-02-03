@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 public class UserDAO {
 	// 오라클 접속
 	String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	String user = "system";
+	String user = "prologue";
 	String pass = "12345";
 
 	Connection con; // 접속 설정
@@ -63,6 +63,19 @@ public class UserDAO {
 		
 		try {
 			String sql = "update userinfo set user_pw = ?, gender = ?, phone_number = ?, birthday = ? where user_id = ?";
+		
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, user_pw);
+			pstmt.setString(2, gender);
+			pstmt.setString(3, phone_number);
+			pstmt.setString(4, birthday);
+			pstmt.setString(5, user_id);
+			
+			pstmt.executeUpdate();
+			
+			con.close();
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

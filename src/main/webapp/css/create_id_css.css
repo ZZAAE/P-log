@@ -1,0 +1,114 @@
+/* ==================================================
+   Signup Card Layout (로그인 CSS와 100% 동일 규격)
+================================================== */
+.signup-card {
+  width: 390px;
+  height: 710px;        /* 로그인 페이지 min-height와 동일하게 고정 */
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 40px 45px 30px; /* 상단 여백을 조금 줄여서 공간 확보 */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,.12);
+  margin: 0 auto;
+}
+
+/* ==================================================
+   Form Groups (공간 최적화)
+================================================== */
+.form-group {
+  margin-bottom: 12px; /* 간격을 18px -> 12px로 축소 */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 입력창 (로그인 페이지와 스타일 통일) */
+.input-field {
+  width: 300px;
+  height: 45px; /* 높이를 50px -> 45px로 살짝 조절 */
+  margin: 0 auto;
+  padding: 0 14px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-field:focus {
+  background: #fff;
+  border-color: #000;
+}
+
+/* 가로 배치 레이아웃 */
+.flex-row {
+  display: flex;
+  width: 300px;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+.code-select { width: 75px !important; }
+.phone-input { width: 217px !important; }
+.birth-box { flex: 1.6; }
+.gender-box { flex: 1; }
+
+/* select 커스텀 */
+select.input-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4L6 8L10 4' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* ==================================================
+   Buttons (하단 밀착)
+================================================== */
+.btn-area {
+  margin-top: auto; 
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-submit {
+  width: 300px;
+  height: 48px;
+  margin: 0 auto;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  width: 300px;
+  height: 48px;
+  margin: 0 auto;
+  background: #fff;
+  color: #b3b3b3;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* PC 스케일링 유지 */
+@media (min-width: 1024px) {
+  .signup-card {
+    transform: scale(1.15);
+    transform-origin: center;
+  }
+}

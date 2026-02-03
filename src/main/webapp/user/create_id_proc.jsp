@@ -11,14 +11,15 @@
 	request.setCharacterEncoding("utf-8");
 %>
 	<jsp:useBean class="user.UserinfoDTO" id="uDTO">
-		<jsp:setProperty name="pDTO" property="*"/>
+		<jsp:setProperty name="uDTO" property="*"/>
 	</jsp:useBean>
 	
 	<jsp:useBean class="user.PlogDAO" id="pDAO"/>
 	
 	<%
 	pDAO.insert_Member(uDTO);
-	response.sendRedirect("login.jsp");
+	
+	response.sendRedirect("login.jsp?signup=success");
 	%>
 </body>
 </html>

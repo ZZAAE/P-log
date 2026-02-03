@@ -1,58 +1,66 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>회원가입</title>
+<meta charset="UTF-8">
+<title>P-log | 회원가입</title>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/login_css.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/create_id_css.css">
 </head>
 <body>
-	<center>
-		<h2>회원가입</h2>
-		<form action="create_id_proc.jsp" method="post">
-			<table width="600" border="1">
 
-				<tr height="40">
-					<td width="200" align="center">아이디</td>
-					<td width="400" align="left"><input type="text" name="user_id"
-						style="border: none; outline: none;"></td>
-				</tr>
+<div class="login-page">
+    <section class="signup-card">
+        <div class="signup-header">
+            <h1 class="brand" style="margin-bottom:10px;">P-log</h1>
+            <h2 class="title">회원가입</h2>
+        </div>
 
-				<tr height="40">
-					<td width="200" align="center">패스워드</td>
-					<td width="400" align="left"><input type="password"
-						name="user_pw" style="border: none; outline: none;"></td>
-				</tr>
+        <form action="create_id_proc.jsp" method="post" style="display:contents;">
+            
+            <div class="form-group">
+                <label>아이디</label>
+                <input class="input-field" type="text" name="user_id" placeholder="아이디를 입력하세요" required>
+            </div>
 
-				<tr height="40">
-					<td width="200" align="center">성별</td>
-					<td width="400" align="left"><input type="radio" name="gender"
-						value="남">남 <input type="radio" name="gender" value="여">여
-					</td>
-				</tr>
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input class="input-field" type="password" name="user_pw" placeholder="비밀번호를 입력하세요" required>
+            </div>
 
-				<tr height="40">
-					<td width="200" align="center">전화번호</td>
-					<td width="400" align="left"><input type="phone"
-						name="phone_number" style="border: none; outline: none;"></td>
-				</tr>
+            <div class="form-group">
+                <label>전화번호</label>
+                <div class="flex-row">
+                    <select class="input-field code-select">
+                        <option>+82</option>
+                        <option>+1</option>
+                    </select>
+                    <input class="input-field" type="tel" name="phone_number" placeholder="번호 입력" required>
+                </div>
+            </div>
 
+            <div class="birth-gender-row">
+                <div class="form-group birth-box">
+                    <label>생년월일</label>
+                    <input class="input-field" type="date" name="birthday" required>
+                </div>
+                <div class="form-group gender-box">
+                    <label>성별</label>
+                    <select class="input-field" name="gender">
+                        <option value="남">남성</option>
+                        <option value="여">여성</option>
+                    </select>
+                </div>
+            </div>
 
-				<tr height="40">
-					<td width="200" align="center">생년월일</td>
-					<td width="400" align="left"><input type="date"
-						name="birthday" style="border: none; outline: none;"></td>
-				</tr>
+            <div class="btn-area">
+                <button type="submit" class="btn-submit">회원가입 완료</button>
+                <button type="button" class="btn-cancel" onclick="location.href='login.jsp'">돌아가기</button>
+            </div>
 
+        </form>
+    </section>
+</div>
 
-
-				<tr height="40">
-					<td width="600" align="center" colspan="2">
-					<input type="submit" value="회원가입"> <input type="reset" value="취소"> <input type="button" value="로그인" onclick="location.href='login.jsp'"> 
-					</td>
-				</tr>
-			</table>
-		</form>
-	</center>
 </body>
 </html>
