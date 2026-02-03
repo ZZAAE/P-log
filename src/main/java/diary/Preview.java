@@ -1,7 +1,6 @@
 package diary;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -29,8 +28,8 @@ public class Preview extends HttpServlet {
 		    HttpSession session = request.getSession();
 			String user_id = (String)session.getAttribute("user_id");
 		    String selectedDate = request.getParameter("selectedDate");
-		    Calendar_DAO cdao = new Calendar_DAO();
-		    DiaryInfo_DTO preview = cdao.select_Diary_Preview(user_id, selectedDate);
+		    CalendarDAO cdao = new CalendarDAO();
+		    DiaryinfoDTO preview = cdao.select_Diary_Preview(user_id, selectedDate);
 		   
 			// JSP저장:calenderMain.jsp에서 사용할 데이터를 저장(request);
 		    request.setAttribute("preview", preview);

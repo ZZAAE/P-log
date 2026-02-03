@@ -1,4 +1,5 @@
-<%@page import="diary.DiaryInfo_DTO"%>
+<%@page import="diary.DiaryinfoDTO"%>
+<%@page import="diary.DiaryinfoDTO"%>
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -18,7 +19,7 @@
 Integer yearObj = (Integer)request.getAttribute("year");
 Integer monthObj = (Integer)request.getAttribute("month");
 String user_id = (String)session.getAttribute("user_id");
-Vector<DiaryInfo_DTO> bean = (Vector<DiaryInfo_DTO>)request.getAttribute("bean");
+Vector<DiaryinfoDTO> bean = (Vector<DiaryinfoDTO>)request.getAttribute("bean");
 String selectedDate = (String)request.getAttribute("selectedDate");
 
 Calendar cal = Calendar.getInstance();
@@ -90,9 +91,9 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           String Cdate = year + "-" + Fmonth + "-" + Fday;
 
           // 1. 해당 날짜에 일기가 있는지 자바 코드로 먼저 검색
-          diary.DiaryInfo_DTO foundDto = null;
+          diary.DiaryinfoDTO foundDto = null;
           if(bean != null) {
-              for(diary.DiaryInfo_DTO dto : bean) {
+              for(diary.DiaryinfoDTO dto : bean) {
                   // DB 날짜 포맷에 맞춰 비교 (String인 경우)
                   if(dto.getCreate_date().equals(Cdate)) {
                       foundDto = dto;

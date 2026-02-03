@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +49,8 @@ public class CalendarMain extends HttpServlet {
 		    }
 
 		    // 3. DAO 호출 (보정된 year, month 기반)
-		    Calendar_DAO cdao = new Calendar_DAO();
-		    Vector<DiaryInfo_DTO> bean = cdao.select_Diary_inDate(user_id);
+		    CalendarDAO cdao = new CalendarDAO();
+		    Vector<DiaryinfoDTO> bean = cdao.select_Diary_inDate(user_id);
 		    
 		    // 4. JSP로 보낼 데이터 세팅
 		    request.setAttribute("user_id", user_id);
