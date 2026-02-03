@@ -34,16 +34,15 @@ public class DiaryDAO {
 	public void insertDiaryInfo(DiaryinfoDTO dDto) {
 		try {
 			connect();
-			String query = "insert into diaryinfo values(?, ?, ?, ?, ?, ?, ?)";
+			String query = "insert into diaryinfo values(diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(query);
-			pstmt.setInt(1, dDto.getDiary_id());
-			pstmt.setString(2, dDto.getUser_id());
-			pstmt.setInt(3, dDto.getAdvise_id());
-			pstmt.setInt(4, dDto.getEmotion());
-			pstmt.setString(5, dDto.getContent());
-			pstmt.setString(6, dDto.getImage_id());
+			pstmt.setString(1, dDto.getUser_id());
+			pstmt.setInt(2, dDto.getAdvise_id());
+			pstmt.setInt(3, dDto.getEmotion());
+			pstmt.setString(4, dDto.getContent());
+			pstmt.setString(5, dDto.getImage_id());
 			Date date = Date.valueOf(dDto.getCreate_date());
-			pstmt.setDate(7, date);
+			pstmt.setDate(6, date);
 			pstmt.executeUpdate(query);
 			con.close();
 			
