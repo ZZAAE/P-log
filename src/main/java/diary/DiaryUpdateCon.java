@@ -45,8 +45,9 @@ public class DiaryUpdateCon extends HttpServlet {
 		
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
+		String previousImage_id = image_id;
 		ImageDAO iDao = new ImageDAO();
-		String str = iDao.getImageinfoPath(image_id);
+		String image_path = iDao.getImageinfoPath(image_id);
 		
 		Part imgFile = request.getPart("file");
 		String path = "../resources/img";
@@ -74,6 +75,8 @@ public class DiaryUpdateCon extends HttpServlet {
 					outputStream.flush();
 					outputStream.close();
 				}
+				image_id = fileName;
+				image_path = path+"/"+fileName;
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -82,7 +85,7 @@ public class DiaryUpdateCon extends HttpServlet {
 		
 		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
-		//bean.setDiary_id(diary_id);
+		bean.setDiary_id(diary_id);
 		bean.setUser_id(user_id);
 		//bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
