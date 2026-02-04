@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+
 import image.ImageDAO;
 import image.ImageinfoDTO;
 
@@ -24,20 +25,23 @@ import image.ImageinfoDTO;
 public class DiaryWriteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("=== 서블릿 접속 성공 ===");
 		reqPro(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("=== 서블릿 접속 성공 ===");
 		reqPro(request, response);
 	}
 	
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("UTF-8");
+		
+		System.out.println("실제 경로: " + getServletContext().getRealPath("/"));
 		
 		String user_id = request.getParameter("user_id");
-		int advise_id = 1001; //임시
+		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
@@ -46,21 +50,21 @@ public class DiaryWriteCon extends HttpServlet {
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
 		
-		String path = "../resources/img";
+		String path = getServletContext().getRealPath("/resources/img");;
 		String fileName = "";
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
-		
 		
 		if(!imgFile.getSubmittedFileName().equals("")) {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
 				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
-				fileName = pureFilename + System.nanoTime() + extentionName;
+				fileName = pureFilename + "_" + System.nanoTime() + extentionName;
 				
 				File file = new File(path, fileName);
+				System.out.println(path);
 				outputStream = new FileOutputStream(file);
 				byte[] buffer = new byte[1024];
 				
@@ -102,7 +106,7 @@ public class DiaryWriteCon extends HttpServlet {
 				
 		request.setAttribute("user_id", user_id);
 		
-		RequestDispatcher dis = request.getRequestDispatcher("");
+		RequestDispatcher dis = request.getRequestDispatcher("/diary/preview.jsp");
 		dis.forward(request, response);
 	}
 }

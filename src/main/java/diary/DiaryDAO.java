@@ -42,8 +42,9 @@ public class DiaryDAO {
 			pstmt.setString(4, dDto.getContent());
 			pstmt.setString(5, dDto.getImage_id());
 			Date date = Date.valueOf(dDto.getCreate_date());
+			System.out.println(date);
 			pstmt.setDate(6, date);
-			pstmt.executeUpdate(query);
+			pstmt.executeUpdate();
 			con.close();
 			
 		} catch (Exception e) {

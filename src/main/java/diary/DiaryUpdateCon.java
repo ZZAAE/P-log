@@ -40,7 +40,7 @@ public class DiaryUpdateCon extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 				
 		String user_id = request.getParameter("user_id");
-		int advise_id = 1001; //임시
+		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
@@ -50,9 +50,9 @@ public class DiaryUpdateCon extends HttpServlet {
 		
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
-		String previousImage_id = image_id;
+		String prevImage_id = image_id;
 
-		String previousImage_path = iDao.getImageinfoPath(previousImage_id);
+		String prevImage_path = iDao.getImageinfoPath(prevImage_id);
 		
 		
 		Part imgFile = request.getPart("file");
@@ -86,12 +86,12 @@ public class DiaryUpdateCon extends HttpServlet {
 				}
 				
 				ImageinfoDTO imgBean = new ImageinfoDTO();
-				imgBean.setImage_id(previousImage_id);
+				imgBean.setImage_id(prevImage_id);
 				imgBean.setImage_path(path+"/"+fileName);
 				iDao.updateImageinfo(imgBean);
 				
 				//이미지 수정후 이전 파일 삭제
-				Path oldFilePath = Paths.get(previousImage_path);
+				Path oldFilePath = Paths.get(prevImage_path);
 				try {
 					Files.delete(oldFilePath);
 				}
