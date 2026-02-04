@@ -90,9 +90,11 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           String Cdate = year + "-" + Fmonth + "-" + Fday;
 
           // 1. 해당 날짜에 일기가 있는지 자바 코드로 먼저 검색
+
           diary.DiaryinfoDTO foundDto = null;
           if(bean != null) {
               for(diary.DiaryinfoDTO dto : bean) {
+
                   // DB 날짜 포맷에 맞춰 비교 (String인 경우)
                   if(dto.getCreate_date().equals(Cdate)) {
                       foundDto = dto;
