@@ -44,7 +44,7 @@ String selectedDate = (String)request.getAttribute("selectedDate");
 	                    } else {
 	                        out.print("오늘 기분은 어땠나요?");
                     	} 
-                    } else out.print("일기가 없습니다.");
+                    } else out.print("오늘 기분은 어땠나요?.");
                     %>
                 </span>
                 
@@ -78,8 +78,9 @@ String selectedDate = (String)request.getAttribute("selectedDate");
         </div>
         
         <div class="diary-footer">
+        	<% if(preview != null){ %>
             <a href="diary_delete.jsp?diary_id=<%=preview.getDiary_id()%>" class="diary-btn delete-btn">삭제</a>
-            
+            <%} %>
         </div>
         
     </div>

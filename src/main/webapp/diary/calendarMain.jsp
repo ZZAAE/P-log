@@ -1,5 +1,4 @@
 <%@page import="diary.DiaryinfoDTO"%>
-<%@page import="diary.DiaryinfoDTO"%>
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -36,6 +35,8 @@ boolean showDiarySection = (selectedDate != null && !selectedDate.trim().isEmpty
 int ty = cal.get(Calendar.YEAR); // 오늘 연도
 int tm = cal.get(Calendar.MONTH) + 1; // 오늘 월
 int td = cal.get(Calendar.DATE); // 오늘 일
+int dayNum = cal.get(Calendar.DAY_OF_WEEK); // 오늘 요일 (1~7 숫자 형식);
+String[] dayWeek = {"", "일", "월", "화", "수", "목", "금", "토"}; // 요일 한글화 리스트
 
 cal.set(year, month - 1, 1); // 서블릿에서 받은 연/월의 1일로 설정
 int week = cal.get(Calendar.DAY_OF_WEEK); 
@@ -137,6 +138,17 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           %>
         </tr>
     </tbody>
+    
+    <div class="weather">
+    	<div class="today">
+    		<h3><%=ty%>년 <%=tm%>월 <%=td%>일 (<%=dayWeek[dayNum]%>)</h3>
+    	</div>
+    	
+    	<div class="today-weather">
+    		
+    	</div>
+    </div>
+    
     </table>
       </div>
     </div>
