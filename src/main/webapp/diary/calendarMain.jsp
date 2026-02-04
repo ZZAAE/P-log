@@ -10,7 +10,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Calendar Main Page!</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calenderMain_css.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calendar.css">
 </head>
 <body>
 <%
@@ -35,6 +35,8 @@ boolean showDiarySection = (selectedDate != null && !selectedDate.trim().isEmpty
 int ty = cal.get(Calendar.YEAR); // 오늘 연도
 int tm = cal.get(Calendar.MONTH) + 1; // 오늘 월
 int td = cal.get(Calendar.DATE); // 오늘 일
+int dayNum = cal.get(Calendar.DAY_OF_WEEK); // 오늘 요일 (1~7 숫자 형식);
+String[] dayWeek = {"", "일", "월", "화", "수", "목", "금", "토"}; // 요일 한글화 리스트
 
 cal.set(year, month - 1, 1); // 서블릿에서 받은 연/월의 1일로 설정
 int week = cal.get(Calendar.DAY_OF_WEEK); 
@@ -46,22 +48,22 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
     <div class="wrapper <%=showDiarySection ? "shifted" : ""%>">
     <header>
         <div class="nav">
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
-		  <p class="current-date"><%=year%>년 <%=month%>월</p>
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
+		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
+		  <p class="current-date"><%=year%>. <%=month%>.</p>
+		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
 		</div>
       </header>
       <div class="calendar">
       <table>
       <thead>
         <tr>
-            <th>일</th>
-            <th>월</th>
-            <th>화</th>
-            <th>수</th>
-            <th>목</th>
-            <th>금</th>
-            <th>토</th>
+            <th>Su</th>
+            <th>Mo</th>
+            <th>Tu</th>
+            <th>We</th>
+            <th>Th</th>
+            <th>Fr</th>
+            <th>Sa</th>
         </tr>
     </thead>
     <tbody>
@@ -105,12 +107,12 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           if(foundDto != null) {
               // 일기가 있는 날 %>
               <td class="emotion_<%=foundDto.getEmotion()%><%=todayClass%>">
-                  <a href="${pageContext.request.contextPath}/Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
+                  <a href="Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
               </td>
           <% } else {
               // 일기가 없는 날 %>
               <td class="no_diary<%=todayClass%>">
-                  <a href="${pageContext.request.contextPath}/Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
+                  <a href="Preview.do?selectedDate=<%=Cdate%>"><%=i%></a>
               </td>
           <% } // if-else
               
@@ -136,6 +138,17 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           %>
         </tr>
     </tbody>
+    
+    <div class="weather">
+    	<div class="today">
+    		<h3><%=ty%>년 <%=tm%>월 <%=td%>일 (<%=dayWeek[dayNum]%>)</h3>
+    	</div>
+    	
+    	<div class="today-weather">
+    		
+    	</div>
+    </div>
+    
     </table>
       </div>
     </div>
