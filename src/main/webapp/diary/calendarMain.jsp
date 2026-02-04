@@ -48,7 +48,7 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
     <header>
         <div class="nav">
 		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
-		  <p class="current-date"><%=year%>년 <%=month%>월</p>
+		  <p class="current-date"><%=year%>. <%=month%>.</p>
 		  <a href="CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
 		</div>
       </header>
@@ -56,13 +56,13 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
       <table>
       <thead>
         <tr>
-            <th>일</th>
-            <th>월</th>
-            <th>화</th>
-            <th>수</th>
-            <th>목</th>
-            <th>금</th>
-            <th>토</th>
+            <th>Su</th>
+            <th>Mo</th>
+            <th>Tu</th>
+            <th>We</th>
+            <th>Th</th>
+            <th>Fr</th>
+            <th>Sa</th>
         </tr>
     </thead>
     <tbody>

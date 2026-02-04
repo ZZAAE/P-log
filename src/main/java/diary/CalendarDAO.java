@@ -65,7 +65,7 @@ public class CalendarDAO {
 	    return v;
 	}
 
-	// select_Diary_Preview 수정
+	// select_Diary_Preview 
 	public DiaryinfoDTO select_Diary_Preview(String id, String date) {
 	    DiaryinfoDTO dDTO = new DiaryinfoDTO();
 	    dDTO = null;
@@ -76,7 +76,6 @@ public class CalendarDAO {
 	        
 	        getCon();
 
-	        // TO_CHAR 추가 또는 TO_DATE 사용
 	        String sql = "select diary_id, emotion, content, image_id from diaryinfo "
 	                + "where user_id=? and TO_CHAR(create_date, 'YYYY-MM-DD') = ?";
 	        pstmt = con.prepareStatement(sql);
