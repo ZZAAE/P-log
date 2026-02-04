@@ -39,57 +39,44 @@ public class DiaryWriteCon extends HttpServlet {
 		//DB단에서 시퀀스로 업데이트 해야함
 		//int diary_id = Integer.parseInt(request.getParameter("diary_id"));
 		String user_id = request.getParameter("user_id");
-		//int advise_id = Integer.parseInt(request.getParameter("advise_id"));
-		int advise_id = 1001; //임시
+		int advise_id = Integer.parseInt(request.getParameter("advise_id"));
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
+		//String image_id = request.getParameter("image_id");
 		String create_date = request.getParameter("create_date");
-		Part imgFile = request.getPart("file");
-		
-		DiaryDAO dDao = new DiaryDAO();
-		ImageDAO iDao = new ImageDAO();
 		
 		String path = "../resources/img";
-		String fileName = "";
+		
+		Part imgFile = request.getPart("file");
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
+		String fileName = "";
 		
-		
-		if(!fileName.equals("")) {
-			try {
-				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
-				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
-				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
-				fileName = pureFilename + System.nanoTime() + extentionName;
-				
-				File file = new File(path, fileName);
-				outputStream = new FileOutputStream(file);
-				byte[] buffer = new byte[1024];
-				
-				int length;
-				
-				while((length = fileContent.read(buffer))!= -1) {
-					outputStream.write(buffer,0,length);
-				}
-				
-				fileContent.close();
-				if(outputStream != null) {
-					outputStream.flush();
-					outputStream.close();
-				}
-				
-				ImageinfoDTO imgBean = new ImageinfoDTO();
-				imgBean.setImage_id(fileName);
-				imgBean.setImage_path(path+"/"+fileName);
-				iDao.insertImageinfo(imgBean);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
+		try {
+			fileName = System.nanoTime() + imgFile.getSubmittedFileName();
 			
+			File file = new File(path, fileName);
+			outputStream = new FileOutputStream(file);
+			byte[] buffer = new byte[1024];
+			
+			int length;
+			
+			while((length = fileContent.read(buffer))!= 1) {
+				outputStream.write(buffer,0,length);
+			}
+			
+			fileContent.close();
+			if(outputStream != null) {
+				outputStream.flush();
+				outputStream.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		
 		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
 		bean.setUser_id(user_id);
@@ -99,12 +86,22 @@ public class DiaryWriteCon extends HttpServlet {
 		bean.setImage_id(fileName);
 		bean.setCreate_date(create_date);
 		
-		
+		DiaryDAO dDao = new DiaryDAO();
 		dDao.insertDiaryInfo(bean);
-				
+		
+		ImageinfoDTO imgBean = new ImageinfoDTO();
+		imgBean.setImage_id(fileName);
+		imgBean.setImage_path(path+"/"+fileName);
+		
+		ImageDAO iDao = new ImageDAO();
+		iDao.insertImageinfo(imgBean);		
+		
+		
 		request.setAttribute("user_id", user_id);
 		
 		RequestDispatcher dis = request.getRequestDispatcher("");
 		dis.forward(request, response);
 	}
+	
+
 }

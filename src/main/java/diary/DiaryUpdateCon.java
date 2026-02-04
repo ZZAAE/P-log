@@ -44,27 +44,23 @@ public class DiaryUpdateCon extends HttpServlet {
 		String create_date = request.getParameter("create_date");
 		
 		DiaryDAO dDao = new DiaryDAO();
-		ImageDAO iDao = new ImageDAO();
 		
 		int diary_id = dDao.getDiaryID(user_id, create_date);
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
 		String previousImage_id = image_id;
-		
+		ImageDAO iDao = new ImageDAO();
 		String image_path = iDao.getImageinfoPath(image_id);
 		
 		Part imgFile = request.getPart("file");
 		String path = "../resources/img";
 		String fileName = "";
 		
-		InputStream fileContent = imgFile.getInputStream();
-		OutputStream outputStream = null;
-		
-		if(!fileName.equals("")) {
+		if(imgFile != null) {			
+			InputStream fileContent = imgFile.getInputStream();
+			OutputStream outputStream = null;
+						
 			try {
-				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
-				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
-				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
-				fileName = pureFilename + System.nanoTime() + extentionName;
+				fileName = System.nanoTime() + imgFile.getSubmittedFileName();
 				
 				File file = new File(path, fileName);
 				outputStream = new FileOutputStream(file);
@@ -72,7 +68,7 @@ public class DiaryUpdateCon extends HttpServlet {
 				
 				int length;
 				
-				while((length = fileContent.read(buffer))!= -1) {
+				while((length = fileContent.read(buffer))!= 1) {
 					outputStream.write(buffer,0,length);
 				}
 				
@@ -81,18 +77,19 @@ public class DiaryUpdateCon extends HttpServlet {
 					outputStream.flush();
 					outputStream.close();
 				}
-				
-				ImageinfoDTO imgBean = new ImageinfoDTO();
-				imgBean.setImage_id(fileName);
-				imgBean.setImage_path(path+"/"+fileName);
-				iDao.insertImageinfo(imgBean);
-				
-				iDao.deleteImageinfo(previousImage_id);
+				image_id = fileName;
+				image_path = path+"/"+fileName;
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-				return;
 			}
+		}
+		
+		if(image_id != previousImage_id) {
+			ImageinfoDTO imgBean = new ImageinfoDTO();
+			imgBean.setImage_id(fileName);
+			imgBean.setImage_path(path+"/"+fileName);
+			iDao.insertImageinfo(imgBean);
 		}
 		
 		DiaryinfoDTO bean = new DiaryinfoDTO();
@@ -104,6 +101,8 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setContent(content);
 		bean.setImage_id(image_id);
 		//bean.setCreate_date(create_date);
+		
+		
 		
 		
 		dDao.updateDiaryInfo(bean);

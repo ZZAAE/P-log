@@ -1,4 +1,4 @@
-<%@page import="diary.DiaryInfo_DTO"%>
+<%@page import="diary.DiaryinfoDTO"%>
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -18,7 +18,7 @@
 Integer yearObj = (Integer)request.getAttribute("year");
 Integer monthObj = (Integer)request.getAttribute("month");
 String user_id = (String)session.getAttribute("user_id");
-Vector<DiaryInfo_DTO> bean = (Vector<DiaryInfo_DTO>)request.getAttribute("bean");
+Vector<DiaryinfoDTO> bean = (Vector<DiaryinfoDTO>)request.getAttribute("bean");
 String selectedDate = (String)request.getAttribute("selectedDate");
 
 Calendar cal = Calendar.getInstance();
@@ -26,8 +26,8 @@ int year = (yearObj != null) ? yearObj : cal.get(Calendar.YEAR);
 int month = (monthObj != null) ? monthObj : cal.get(Calendar.MONTH) + 1;
 
 if(user_id == null){
-	user_id = "test";
-	session.setAttribute("user_id", user_id); // 임시 코드
+   user_id = "test";
+   session.setAttribute("user_id", user_id); // 임시 코드
 }
 
 boolean showDiarySection = (selectedDate != null && !selectedDate.trim().isEmpty());
@@ -46,10 +46,10 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
     <div class="wrapper <%=showDiarySection ? "shifted" : ""%>">
     <header>
         <div class="nav">
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
-		  <p class="current-date"><%=year%>년 <%=month%>월</p>
-		  <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
-		</div>
+        <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month-1%>" class="cal-btn">&lt;</a>
+        <p class="current-date"><%=year%>년 <%=month%>월</p>
+        <a href="${pageContext.request.contextPath}/CalendarMain.do?&year=<%=year%>&month=<%=month+1%>" class="cal-btn">&gt;</a>
+      </div>
       </header>
       <div class="calendar">
       <table>
@@ -65,7 +65,7 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
         </tr>
     </thead>
     <tbody>
-    	<tr class="days">
+       <tr class="days">
           <%
           // 이전 달의 날짜 계산
           Calendar preCal = (Calendar)cal.clone();
@@ -82,7 +82,7 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           
           // 현재 월의 날짜 출력
           int dayCount = week - 1;
-      	  for(int i = 1; i <= lastDay; i++) {
+           for(int i = 1; i <= lastDay; i++) {
           String todayClass = (year == ty && month == tm && i == td) ? " active" : "";
           
           String Fmonth = month < 10 ? "0" + month : String.valueOf(month);
@@ -90,9 +90,9 @@ int lastDay = cal.getActualMaximum(Calendar.DATE);
           String Cdate = year + "-" + Fmonth + "-" + Fday;
 
           // 1. 해당 날짜에 일기가 있는지 자바 코드로 먼저 검색
-          diary.DiaryInfo_DTO foundDto = null;
+          diary.DiaryinfoDTO foundDto = null;
           if(bean != null) {
-              for(diary.DiaryInfo_DTO dto : bean) {
+              for(diary.DiaryinfoDTO dto : bean) {
                   // DB 날짜 포맷에 맞춰 비교 (String인 경우)
                   if(dto.getCreate_date().equals(Cdate)) {
                       foundDto = dto;

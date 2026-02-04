@@ -1,182 +1,91 @@
-/* ===== 기본 설정 ===== */
-* {
-    box-sizing: border-box;
+/* 우측하단 플로팅 + 버튼 영역 */
+.fab-wrap{
+  position:absolute;
+  right:16px;
+  bottom:18px;
+  z-index:30;
 }
 
-body {
-    margin: 0;
-    padding: 30px;
-    font-family: "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
-    background-color: #f4f6f8;
-    color: #333;
+/* + 버튼 */
+.fab{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  border:1px solid #e6e6e6;
+  background:#fff;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+  cursor:pointer;
+  font-size:26px;
+  line-height:1;
+}
+.fab:hover{ background:#f7f7f7; }
+
+/* + 버튼 위에 뜨는 메뉴 */
+.fab-menu{
+  position:absolute;
+  right:0;
+  bottom:62px; /* 버튼 위로 띄우기 */
+  width:110px;
+  background:#fff;
+  border:1px solid #e9e9e9;
+  border-radius:14px;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  padding:6px;
+  display:none;
 }
 
-/* ===== 전체 컨테이너 ===== */
-.wrap {
-    max-width: 900px;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 28px 32px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+.fab-menu.show{ display:block; }
+
+.fab-item{
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:center;
+  padding:10px 8px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+}
+.fab-item:hover{ background:#f5f5f5; }
+
+.fab-item.danger{ color:#d32f2f; }
+
+/* 배경 딤(점세개 화면처럼) */
+.fab-dim{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .18s, visibility .18s;
+  z-index:25;
+}
+.fab-dim.show{
+  opacity:0.25;
+  visibility:visible;
 }
 
-/* ===== 제목 ===== */
-.wrap h2 {
-    margin: 0 0 24px 0;
-    font-size: 26px;
-    font-weight: 800;
-    text-align: center;
+/* 상단 오른쪽 액션 버튼(+ / ✓) */
+.top-action{
+  border:1px solid #e6e6e6;
+  background:#fff;
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:18px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 14px rgba(0,0,0,.06);
 }
+.top-action:hover{ background:#f7f7f7; }
 
-/* ===== 공통 행 ===== */
-.row {
-    margin-bottom: 22px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 700;
-    font-size: 15px;
-}
-
-/* ===== 날짜 ===== */
-input[type="date"] {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    outline: none;
-}
-
-input[type="date"]:focus {
-    border-color: #1565c0;
-}
-
-/* ===== 기분 선택 ===== */
-.moods {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.mood {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 14px;
-    border-radius: 16px;
-    background: #fafafa;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-}
-
-.mood:hover {
-    background: #eef4ff;
-}
-
-.mood.active {
-    background: #f1f6ff;
-    border-color: #1565c0;
-    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
-}
-
-.mood .emo {
-    font-size: 20px;
-}
-
-/* ===== 힌트 텍스트 ===== */
-.hint {
-    margin-top: 6px;
-    font-size: 12px;
-    color: #777;
-}
-
-/* ===== 일기 내용 ===== */
-textarea {
-    width: 100%;
-    min-height: 260px;
-    padding: 14px;
-    font-size: 14px;
-    border-radius: 14px;
-    border: 1px solid #ccc;
-    resize: vertical;
-    outline: none;
-    line-height: 1.6;
-}
-
-textarea:focus {
-    border-color: #1565c0;
-}
-
-/* ===== 파일 업로드 ===== */
-input[type="file"] {
-    margin-top: 4px;
-}
-
-#fileName {
-    margin-top: 6px;
-    font-size: 12px;
-    color: #666;
-}
-
-/* ===== 하단 버튼 ===== */
-.bottom {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 28px;
-}
-
-.btn {
-    padding: 10px 18px;
-    border-radius: 14px;
-    border: none;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.btn.save {
-    background: #2e7d32;
-    color: #fff;
-}
-
-.btn.save:hover {
-    background: #256628;
-}
-
-.btn.main {
-    background: #424242;
-    color: #fff;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-}
-
-.btn.main:hover {
-    background: #2c2c2c;
-}
-
-/* ===== 반응형 ===== */
-@media (max-width: 600px) {
-    body {
-        padding: 16px;
-    }
-
-    .wrap {
-        padding: 20px;
-    }
-
-    .moods {
-        gap: 8px;
-    }
-
-    textarea {
-        min-height: 200px;
-    }
+/* topbar-right 간격 조금 정리 */
+.topbar-right{
+  display:flex;
+  gap:6px;
+  align-items:center;
 }
