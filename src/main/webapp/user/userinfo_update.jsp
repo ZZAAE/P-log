@@ -48,8 +48,8 @@
 				<tr height="40">
 					<td width="600" align="center" colspan="2">
 						<input type="submit" value="수정하기" >
-						<input type="button" values="삭제하기" onclick="location.href='UserinfoDeleteCon.do?num=${bean.user_id}'" />
-						<input type="button" value="취소" onclick="location.href='/user/main.jsp'">
+						<input type="button" value="삭제하기" onclick="location.href='user/userinfo_delete.jsp'" />
+						<input type="button" value="취소" onclick="location.href='user/main.jsp'">
 					</td>
 				</tr>
 

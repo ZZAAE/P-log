@@ -80,4 +80,18 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void userinfoDelete(String user_id) {
+		getCon();
+		
+		try {
+			String sql = "delete from userinfo where user_id = ?";
+			
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, user_id);
+		} catch (Exception e) {
+			
+		}
+	}
 }

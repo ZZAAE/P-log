@@ -14,10 +14,10 @@
 		<jsp:setProperty name="uDTO" property="*"/>
 	</jsp:useBean>
 	
-	<jsp:useBean class="user.PlogDAO" id="pDAO"/>
+	<jsp:useBean class="user.UserinfoDAO" id="uDAO"/>
 	
 	<%
-	pDAO.insert_Member(uDTO);
+	uDAO.insert_Member(uDTO);
 	
 	response.sendRedirect("login.jsp?signup=success");
 	%>

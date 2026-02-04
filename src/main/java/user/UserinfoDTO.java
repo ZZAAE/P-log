@@ -1,7 +1,5 @@
 package user;
 
-
-
 public class UserinfoDTO {
 	private String user_id;
 	private String user_pw;

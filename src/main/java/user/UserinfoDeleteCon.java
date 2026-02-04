@@ -1,11 +1,14 @@
 package user;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/UserinfoDeleteCon.do")
 public class UserinfoDeleteCon extends HttpServlet {
@@ -21,8 +24,24 @@ public class UserinfoDeleteCon extends HttpServlet {
 	}
 	
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+
+		HttpSession session = request.getSession();
+		String user_id = (String) session.getAttribute("user_id");
 		
+		if (user_id == null) {
+			response.sendRedirect("login.jsp");
+			return;
+		}
 		
+		UserDAO userDAO = new UserDAO();
+		UserinfoDTO bean = userDAO.getOneUserinfo(user_id);
+
+		request.setAttribute("bean", bean);
+
+		RequestDispatcher dis = request.getRequestDispatcher("/user/main.jsp");
+		dis.forward(request, response);
+
 	}
 
 }

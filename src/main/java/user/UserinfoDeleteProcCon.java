@@ -8,10 +8,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;   
 
-@WebServlet("/user/loginCon.do")
-public class loginCon extends HttpServlet {
+@WebServlet("/UserinfoDeleteProcCon.do")
+public class UserinfoDeleteProcCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -26,30 +26,27 @@ public class loginCon extends HttpServlet {
 
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
 
-		request.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
 
-		String user_id = request.getParameter("user_id");
-		String user_pw = request.getParameter("user_pw");
+		String user_id = (String) session.getAttribute("user_id");
+		String user_pw = (String) session.getAttribute("user_pw");
 
-		UserinfoDTO uDTO = new UserinfoDTO();
-		uDTO.setUser_id(user_id);
-		uDTO.setUser_pw(user_pw);
+		String current_pw = request.getParameter("current_pw"); // 입력한 비밀번호
 
-		LoginDAO lDAO = new LoginDAO();
-		boolean user_check = lDAO.userCheck(uDTO);
+		UserDAO uDAO = new UserDAO();
+		UserinfoDTO bean = uDAO.getOneUserinfo(user_id);
 
-		if (user_check) {
-			// 세션에 저장
-			HttpSession session = request.getSession();
-			session.setAttribute("user_id", user_id); 
-			
-			// 메인 페이지 이동
-			response.sendRedirect("main.jsp");
-		} else {
-			request.setAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+		if (user_pw.equals(current_pw)) {
+			uDAO.userinfoDelete(user_id);
+			request.setAttribute("msg", "delsuccess");
+			response.sendRedirect("UserinfoDeleteCon.do");
+		}
+		else {
+			request.setAttribute("msg", "delfail");
 
-			RequestDispatcher dis = request.getRequestDispatcher("/user/login.jsp");
+			RequestDispatcher dis = request.getRequestDispatcher("/user/main.jsp");
 			dis.forward(request, response);
 		}
 	}

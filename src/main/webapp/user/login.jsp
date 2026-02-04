@@ -25,7 +25,7 @@
       }
     %>
 
-    <form class="form" action="<%=request.getContextPath()%>/user/loginCon.do" method="post">
+    <form class="form" action="<%=request.getContextPath()%>/user/LoginCon.do" method="post">
       <input class="input" type="text" name="user_id" placeholder="아이디를 입력해주세요." required>
       <input class="input" type="password" name="user_pw" placeholder="비밀번호를 입력해주세요." required>
 
