@@ -1,0 +1,550 @@
+/* ========================================
+   전역 스타일
+======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 감정 색상 - 파스텔 톤 */
+    --emotion-angry: #FFB3BA;
+    --emotion-bad: #E0E0E0;
+    --emotion-neutral: #BAFFC9;
+    --emotion-smile: #BAE1FF;
+    --emotion-happy: #FFFFBA;
+    
+    /* 기본 색상 */
+    --primary-color: #000000;
+    --secondary-color: #333333;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --text-tertiary: #CCCCCC;
+    --background-color: #FFFFFF;
+    --background-gray: #F5F5F5;
+    --border-color: #E5E5E5;
+    --hover-color: #F5F5F5;
+    
+    /* 간격 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* 폰트 크기 */
+    --font-xs: 11px;
+    --font-sm: 13px;
+    --font-md: 15px;
+    --font-lg: 18px;
+    --font-xl: 20px;
+    
+    /* 테두리 반경 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-circle: 50%;
+    
+    /* 그림자 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Malgun Gothic', sans-serif;
+    background-color: #FAFAFA;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   컨테이너
+======================================== */
+
+.container {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+/* ========================================
+   캘린더 래퍼
+======================================== */
+
+.wrapper {
+    background-color: var(--background-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+/* ========================================
+   헤더
+======================================== */
+
+header {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    background-color: var(--background-color);
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.current-date {
+    font-size: var(--font-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.cal-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-circle);
+    background-color: transparent;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: var(--font-lg);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.cal-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.cal-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   캘린더 테이블
+======================================== */
+
+.calendar {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.calendar table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.calendar thead th {
+    padding: var(--spacing-sm) 0;
+    text-align: center;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.calendar tbody tr {
+    margin-bottom: var(--spacing-xs);
+}
+
+.calendar tbody td {
+    padding: 3px;
+    text-align: center;
+    position: relative;
+}
+
+.calendar tbody td a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto;
+    border-radius: var(--radius-circle);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+/* 일반 날짜 (일기 없음) */
+.calendar tbody td.no_diary a {
+    background-color: var(--background-gray);
+}
+
+.calendar tbody td.no_diary:hover a {
+    background-color: #E8E8E8;
+    transform: scale(1.05);
+}
+
+/* 감정별 색상 */
+.calendar tbody td.emotion_1 a {
+    background-color: var(--emotion-angry);
+    color: var(--text-primary);
+}
+
+.calendar tbody td.emotion_2 a {
+    background-color: var(--emotion-bad);
+    color: var(--text-primary);
+}
+
+.calendar tbody td.emotion_3 a {
+    background-color: var(--emotion-neutral);
+    color: var(--text-primary);
+}
+
+.calendar tbody td.emotion_4 a {
+    background-color: var(--emotion-smile);
+    color: var(--text-primary);
+}
+
+.calendar tbody td.emotion_5 a {
+    background-color: var(--emotion-happy);
+    color: var(--text-primary);
+}
+
+/* hover 효과 */
+.calendar tbody td[class*="emotion_"]:hover a {
+    transform: scale(1.08);
+    filter: brightness(0.95);
+}
+
+/* 오늘 날짜 표시 */
+.calendar tbody td.active a {
+    box-shadow: 0 0 0 2px var(--primary-color) inset;
+    font-weight: 700;
+}
+
+/* 다른 달 날짜 */
+.calendar tbody td.inactive {
+    opacity: 0.3;
+}
+
+.calendar tbody td.inactive a {
+    background-color: transparent;
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+/* ========================================
+   선택된 날짜 정보
+======================================== */
+
+.selected-date-info {
+    background-color: var(--background-color);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    margin-top: var(--spacing-lg);
+}
+
+.selected-date-title {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.diary-content {
+    background-color: var(--background-gray);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diary-placeholder {
+    color: var(--text-secondary);
+    font-size: var(--font-md);
+    text-align: center;
+}
+
+/* ========================================
+   감정 선택기
+======================================== */
+
+.emotion-label {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.emotion-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.emotion-btn {
+    padding: var(--spacing-md) var(--spacing-xs);
+    border: 2px solid var(--border-color);
+    background-color: var(--background-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.emotion-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.emotion-btn:active {
+    transform: translateY(0);
+}
+
+.emotion-icon {
+    font-size: 32px;
+}
+
+.emotion-name {
+    font-size: var(--font-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.emotion-btn[data-emotion="1"]:hover {
+    border-color: var(--emotion-angry);
+    background-color: #FFF5F5;
+}
+
+.emotion-btn[data-emotion="2"]:hover {
+    border-color: var(--emotion-bad);
+    background-color: #F5F5F5;
+}
+
+.emotion-btn[data-emotion="3"]:hover {
+    border-color: var(--emotion-neutral);
+    background-color: #F0FFF0;
+}
+
+.emotion-btn[data-emotion="4"]:hover {
+    border-color: var(--emotion-smile);
+    background-color: #F0F8FF;
+}
+
+.emotion-btn[data-emotion="5"]:hover {
+    border-color: var(--emotion-happy);
+    background-color: #FFFEF0;
+}
+
+/* ========================================
+   현재 감정 표시
+======================================== */
+
+.current-emotion-label {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.current-emotion-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: var(--hover-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.current-emotion-icon {
+    font-size: 48px;
+}
+
+.current-emotion-name {
+    font-size: var(--font-lg);
+    font-weight: 700;
+}
+
+.change-emotion-btn {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-size: var(--font-md);
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.change-emotion-btn:hover {
+    background-color: var(--hover-color);
+}
+
+/* ========================================
+   범례
+======================================== */
+
+.legend {
+    background-color: var(--background-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.legend-title {
+    font-size: var(--font-md);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-circle);
+    flex-shrink: 0;
+}
+
+.legend-text {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   Shifted 상태 (날짜 선택 시)
+======================================== */
+
+.wrapper.shifted {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ========================================
+   반응형 디자인
+======================================== */
+
+@media (max-width: 480px) {
+    .container {
+        padding: var(--spacing-md);
+        max-width: 100%;
+    }
+    
+    .calendar tbody td a {
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-xs);
+    }
+    
+    .current-date {
+        font-size: var(--font-lg);
+    }
+    
+    .emotion-buttons {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .emotion-icon {
+        font-size: 24px;
+    }
+    
+    .emotion-name {
+        font-size: 10px;
+    }
+    
+    .legend-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        max-width: 480px;
+    }
+}
+
+/* ========================================
+   접근성
+======================================== */
+
+*:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   애니메이션
+======================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.selected-date-info {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   유틸리티 클래스
+======================================== */
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 {
+    margin-top: var(--spacing-sm);
+}
+
+.mt-2 {
+    margin-top: var(--spacing-md);
+}
+
+.mt-3 {
+    margin-top: var(--spacing-lg);
+}
+
+.mb-1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-2 {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-3 {
+    margin-bottom: var(--spacing-lg);
+}

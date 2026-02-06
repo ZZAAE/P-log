@@ -18,13 +18,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import image.ImageDAO;
 import image.ImageinfoDTO;
 
 @MultipartConfig
-@WebServlet("/DiaryUpdateCon.do")
+@WebServlet("/diary/DiaryUpdateCon.do")
 public class DiaryUpdateCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -39,7 +40,8 @@ public class DiaryUpdateCon extends HttpServlet {
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 				
-		String user_id = request.getParameter("user_id");
+		HttpSession session = request.getSession();  		
+		String user_id = (String)session.getAttribute("user_id");
 		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
@@ -122,7 +124,7 @@ public class DiaryUpdateCon extends HttpServlet {
 		
 		request.setAttribute("user_id", user_id);
 
-		RequestDispatcher dis = request.getRequestDispatcher("");
+		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);
 	}
 

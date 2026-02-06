@@ -1,0 +1,241 @@
+/* diary.css (iPhone 12 Pro 기준: 390 x 844 + Safe Area 대응) */
+
+/* =========================
+   Reset / Base
+========================= */
+*{ box-sizing:border-box; }
+
+html, body{
+  width:100%;
+  height:100%;
+  margin:0;
+}
+
+body{
+  font-family: system-ui, -apple-system, "Inter", Arial, sans-serif;
+  background:#fff;
+  color:#111;
+}
+
+/* =========================
+   Phone Frame (iPhone 12 Pro)
+   - 모바일: 화면 꽉 채움
+   - 데스크탑: 390x844로 고정
+========================= */
+.phone{
+  width:100vw;
+  height:100vh;
+  max-width:390px;
+  max-height:844px;
+  margin:0 auto;
+
+  border:1px solid #cfcfcf;
+  background:
+    radial-gradient(1200px 500px at 50% -240px, rgba(0,0,0,.06), transparent 60%),
+    linear-gradient(#fbfbfb, #ffffff 45%);
+  overflow:hidden;
+  position:relative;
+
+  /* ✅ iOS 노치 safe-area */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* =========================
+   Topbar
+========================= */
+.topbar{
+  height:70px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  position:relative;
+
+  /* 기존 phone padding을 topbar로 이동 */
+  padding: 28px 14px 0;
+}
+
+.icon-btn{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:#111;
+  display:grid;
+  place-items:center;
+}
+
+.icon-btn.back{
+  width:40px;
+  height:40px;
+  font-size:26px;
+}
+
+/* right actions (+, ✓) */
+.actions{
+  margin-left:auto;
+  display:flex;
+  gap:8px;
+  padding-top:6px;
+}
+
+.icon-btn.circle{
+  width:32px;
+  height:32px;
+  border:1px solid #d9d9d9;
+  border-radius:999px;
+  background:#fff;
+  font-size:18px;
+  line-height:1;
+}
+
+/* date center */
+.date-wrap{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top: 35px;
+  text-align:center;
+}
+
+.date-text{
+  font-size:15px;
+  font-weight:600;
+  color:#444;
+}
+
+.date-line{
+  width:120px;
+  height:2px;
+  background:#ff6b6b;
+  border-radius:2px;
+  margin:6px auto 0;
+  opacity:.7;
+}
+
+/* =========================
+   Emoji Row
+========================= */
+.emoji-row{
+  margin-top: 18px;
+  display:flex;
+  justify-content:space-between;
+  padding: 0 28px;
+}
+
+.emoji-btn{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.emoji-btn img{
+  width:30px;
+  height:30px;
+  object-fit:contain;
+}
+
+/* =========================
+   Photo Area
+========================= */
+.photo-area{
+  margin-top: 20px;
+  padding: 0 12px;
+}
+
+.photo{
+  width:100%;
+  height:220px;
+  border-radius:10px;
+  object-fit:cover;
+  display:block;
+  background:#f2f2f2;
+}
+
+/* =========================
+   Content Area
+========================= */
+.content-area{
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.content-box{
+  width:100%;
+  height:400px;
+  background:#efefef;
+  border-radius:7px;
+  position:relative;
+  overflow:hidden;
+}
+
+.diary-input{
+  width:100%;
+  height:100%;
+  border:none;
+  outline:none;
+  resize:none;
+  background:transparent;
+
+  padding:16px;
+  font-size:14px;
+  line-height:1.6;
+  color:#111;
+  font-family: inherit;
+}
+
+/* =========================
+   Emoji Select (CSS ONLY)
+   - 선택 시 나머지 블러
+   - 같은 표정 다시 누르면 취소
+   - 1개만 선택 유지
+========================= */
+.emoji-pick .emoji-btn img{
+  transition: filter .25s ease, opacity .25s ease, transform .15s ease;
+}
+
+/* 선택된 것 강조 */
+.emoji-pick #emo1:checked + label img,
+.emoji-pick #emo2:checked + label img,
+.emoji-pick #emo3:checked + label img,
+.emoji-pick #emo4:checked + label img,
+.emoji-pick #emo5:checked + label img{
+  filter:none;
+  opacity:1;
+  transform: scale(1.15);
+}
+
+/* 하나라도 선택된 상태면: 나머지 블러 + 흐리게 */
+.emoji-pick:has(#emo1:checked) label:not([for="emo1"]) img,
+.emoji-pick:has(#emo2:checked) label:not([for="emo2"]) img,
+.emoji-pick:has(#emo3:checked) label:not([for="emo3"]) img,
+.emoji-pick:has(#emo4:checked) label:not([for="emo4"]) img,
+.emoji-pick:has(#emo5:checked) label:not([for="emo5"]) img{
+  filter: blur(3px);
+  opacity: .35;
+}
+
+/* 1개만 선택 유지: 선택된 것 외엔 클릭 막기 */
+.emoji-pick:has(.emo:checked) label{ pointer-events:none; }
+.emoji-pick #emo1:checked + label,
+.emoji-pick #emo2:checked + label,
+.emoji-pick #emo3:checked + label,
+.emoji-pick #emo4:checked + label,
+.emoji-pick #emo5:checked + label{
+  pointer-events:auto;
+}
+
+/* =========================
+   (선택) 데스크탑에서만 가운데 정렬하고 싶으면
+========================= */
+@media (min-width: 500px){
+  body{
+    display:grid;
+    place-items:center;
+  }
+}

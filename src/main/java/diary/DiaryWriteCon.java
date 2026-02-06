@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 
@@ -21,26 +22,25 @@ import image.ImageDAO;
 import image.ImageinfoDTO;
 
 @MultipartConfig
-@WebServlet("/DiaryWriteCon.do")
+@WebServlet("/diary/DiaryWriteCon.do")
 public class DiaryWriteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("=== 서블릿 접속 성공 ===");
 		reqPro(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("=== 서블릿 접속 성공 ===");
 		reqPro(request, response);
 	}
 	
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		System.out.println("실제 경로: " + getServletContext().getRealPath("/"));
+		System.out.println("DiaryWriteCon 진입");
+		HttpSession session = request.getSession();  
 		
-		String user_id = request.getParameter("user_id");
+		String user_id = (String)session.getAttribute("user_id");
 		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
@@ -50,8 +50,10 @@ public class DiaryWriteCon extends HttpServlet {
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
 		
-		String path = getServletContext().getRealPath("/resources/img");;
+		String jspPath = request.getContextPath() + "/resources/img/";
+		String realPath = request.getServletContext().getRealPath("/resources/img/");
 		String fileName = "";
+		
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
@@ -63,8 +65,7 @@ public class DiaryWriteCon extends HttpServlet {
 				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
 				fileName = pureFilename + "_" + System.nanoTime() + extentionName;
 				
-				File file = new File(path, fileName);
-				System.out.println(path);
+				File file = new File(realPath, fileName);
 				outputStream = new FileOutputStream(file);
 				byte[] buffer = new byte[1024];
 				
@@ -82,7 +83,7 @@ public class DiaryWriteCon extends HttpServlet {
 				
 				ImageinfoDTO imgBean = new ImageinfoDTO();
 				imgBean.setImage_id(fileName);
-				imgBean.setImage_path(path+"/"+fileName);
+				imgBean.setImage_path(jspPath+fileName);
 				iDao.insertImageinfo(imgBean);
 				
 			} catch (Exception e) {
@@ -104,9 +105,9 @@ public class DiaryWriteCon extends HttpServlet {
 		
 		dDao.insertDiaryInfo(bean);
 				
-		request.setAttribute("user_id", user_id);
-		
-		RequestDispatcher dis = request.getRequestDispatcher("/diary/preview.jsp");
+		System.out.println("DiaryWriteCon.do의 create_date: " + create_date);
+		request.setAttribute("create_date", create_date);
+		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);
 	}
 }

@@ -44,8 +44,9 @@ public class DiaryDAO {
 			Date date = Date.valueOf(dDto.getCreate_date());
 			System.out.println(date);
 			pstmt.setDate(6, date);
-			pstmt.executeUpdate();
+			int result = pstmt.executeUpdate();
 			con.close();
+			System.out.println("insert 수행 결과: " + result);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

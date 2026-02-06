@@ -13,10 +13,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import image.ImageDAO;
 
-@WebServlet("/DiaryDeleteCon.do")
+@WebServlet("/diary/DiaryDeleteCon.do")
 public class DiaryDeleteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -34,7 +35,8 @@ public class DiaryDeleteCon extends HttpServlet {
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
 		
-		String user_id = request.getParameter("user_id");
+		HttpSession session = request.getSession();  		
+		String user_id = (String)session.getAttribute("user_id");
 		String create_date = request.getParameter("create_date");
 				
 		int diary_id = dDao.getDiaryID(user_id, create_date);
@@ -56,8 +58,7 @@ public class DiaryDeleteCon extends HttpServlet {
 		dDao.deleteDirayInfo(diary_id);
 		iDao.deleteImageinfo(bean.getImage_id());
 		
-		request.setAttribute("user_id",user_id);
-		RequestDispatcher dis = request.getRequestDispatcher("");
+		RequestDispatcher dis = request.getRequestDispatcher("CalendarMain.do");
 		dis.forward(request, response);		
 	}
 }
