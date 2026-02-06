@@ -38,26 +38,29 @@ public class DiaryDeleteCon extends HttpServlet {
 		HttpSession session = request.getSession();  		
 		String user_id = (String)session.getAttribute("user_id");
 		String create_date = request.getParameter("create_date");
-				
+					
 		int diary_id = dDao.getDiaryID(user_id, create_date);
-		
+			
 		DiaryinfoDTO bean = dDao.getDiaryInfo(diary_id);
 		
-		String filePath = iDao.getImageinfoPath(bean.getImage_id());
-		Path oldFilePath = Paths.get(filePath);
+		String image_id = bean.getImage_id();
+		String realPath = request.getServletContext().getRealPath("/resources/img/"+image_id);
+		Path oldFilePath = Paths.get(realPath);
 		try {
 			Files.delete(oldFilePath);
 		}
 		catch(NoSuchFileException e){
 			System.out.println("삭제하려는 파일이 존재하지 않음");
+			return;
 		}
 		catch (IOException e) {            
 			e.printStackTrace();
+			return;
 		}
 		
 		dDao.deleteDirayInfo(diary_id);
-		iDao.deleteImageinfo(bean.getImage_id());
-		
+		iDao.deleteImageinfo(image_id);
+				
 		RequestDispatcher dis = request.getRequestDispatcher("CalendarMain.do");
 		dis.forward(request, response);		
 	}

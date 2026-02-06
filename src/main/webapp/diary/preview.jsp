@@ -66,7 +66,7 @@ int emotion = (preview == null) ? 0 : preview.getEmotion();
 <script>
   function goDelete(){
     if(confirm("정말 삭제하시겠습니까?")){
-      location.href = "<%=request.getContextPath()%>/diary/DiaryDeleteCon.do?date=<%=date%>";
+      location.href = "<%=request.getContextPath()%>/diary/DiaryDeleteCon.do?create_date=<%=date%>";
     }
   }
 </script>

@@ -61,6 +61,7 @@ public class DiaryDAO {
 			connect();
 			String query = "select * from diaryinfo where diary_id=?";
 			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				ddto.setDiary_id(Integer.parseInt(rs.getString(1)));
@@ -178,12 +179,14 @@ public class DiaryDAO {
 		int id = -1;
 		try {
 				connect();
-				String query = "select diary_id from diaryinfo where user_id=? AND create_date=?";
+				
+				String query = "select diary_id from diaryinfo where user_id=? and create_date = ?";
+				System.out.println(query);
 				pstmt = con.prepareStatement(query);
 				pstmt.setString(1, userID);
 				pstmt.setDate(2, Date.valueOf(date));
-				pstmt.executeQuery();
-				con.close();
+				rs = pstmt.executeQuery();
+
 				if(rs.next()) {
 					id = rs.getInt(1);
 				}
