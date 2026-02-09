@@ -42,15 +42,22 @@ public class DiaryUpdateCon extends HttpServlet {
 				
 		HttpSession session = request.getSession();  		
 		String user_id = (String)session.getAttribute("user_id");
-		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
+		int advise_id = 0;
 		
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
 		
 		int diary_id = dDao.getDiaryID(user_id, create_date);
+		DiaryinfoDTO bean = new DiaryinfoDTO();
+		if (emotion != bean.getEmotion()) {
+			advise_id = emotion * 1000 + (int) (Math.random() * 10) + 1;
+		} else {
+			advise_id = bean.getAdvise_id();
+		}
+					
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
 		String prevImage_id = image_id;
 
@@ -64,6 +71,7 @@ public class DiaryUpdateCon extends HttpServlet {
 			jspPath = request.getContextPath() + "/resources/img/";
 			realPath = request.getServletContext().getRealPath("/resources/img/");
 		}
+		
 		
 		
 		InputStream fileContent = imgFile.getInputStream();
@@ -116,8 +124,6 @@ public class DiaryUpdateCon extends HttpServlet {
 				return;
 			}
 		}
-		
-		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
 		bean.setDiary_id(diary_id);
 		bean.setUser_id(user_id);

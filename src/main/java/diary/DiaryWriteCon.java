@@ -41,11 +41,11 @@ public class DiaryWriteCon extends HttpServlet {
 		HttpSession session = request.getSession();  
 		
 		String user_id = (String)session.getAttribute("user_id");
-		int advise_id = 1002; //임시
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
 		Part imgFile = request.getPart("file");
+		int advise_id = emotion*1000 + (int)(Math.random()*10) + 1; 
 		
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
