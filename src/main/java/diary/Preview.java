@@ -35,7 +35,7 @@ public class Preview extends HttpServlet {
 			if(request.getAttribute("create_date")!=null) { //DirayWriteCon.do에서 값을 보내줄경우
 				selectedDate = (String)request.getAttribute("create_date");
 			}
-			else { // calendarMain.jsp에서 값을 보내줄 경우
+			else { // calendarMain.jsp 또는 DiaryUpdateCon에서 값을 보내줄 경우
 				selectedDate = request.getParameter("selectedDate");
 			}
 		    System.out.println("Preview.java의 selectedDate: " + selectedDate);

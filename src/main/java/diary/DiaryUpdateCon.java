@@ -54,24 +54,25 @@ public class DiaryUpdateCon extends HttpServlet {
 		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
 		String prevImage_id = image_id;
 
-		String prevImage_path = iDao.getImageinfoPath(prevImage_id);
+		String prevImage_path = request.getServletContext().getRealPath("/resources/img/") + prevImage_id;
 		
 		
 		Part imgFile = request.getPart("file");
-		String path = "../resources/img";
+		String jspPath = request.getContextPath() + "/resources/img/";
+		String realPath = request.getServletContext().getRealPath("/resources/img/");
 		String fileName = "";
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
 		
-		if(!fileName.equals("")) {
+		if(!imgFile.getSubmittedFileName().equals(""))  {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
 				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
-				fileName = pureFilename + System.nanoTime() + extentionName;
+				fileName = pureFilename  + "_" + System.nanoTime() + extentionName;
 				
-				File file = new File(path, fileName);
+				File file = new File(realPath, fileName);
 				outputStream = new FileOutputStream(file);
 				byte[] buffer = new byte[1024];
 				
@@ -88,14 +89,14 @@ public class DiaryUpdateCon extends HttpServlet {
 				}
 				
 				ImageinfoDTO imgBean = new ImageinfoDTO();
-				imgBean.setImage_id(prevImage_id);
-				imgBean.setImage_path(path+"/"+fileName);
-				iDao.updateImageinfo(imgBean);
+				imgBean.setImage_id(fileName);
+				imgBean.setImage_path(jspPath+fileName);
+				iDao.insertImageinfo(imgBean);
 				
 				//이미지 수정후 이전 파일 삭제
 				Path oldFilePath = Paths.get(prevImage_path);
 				try {
-					Files.delete(oldFilePath);
+					Files.delete(oldFilePath);					
 				}
 				catch(NoSuchFileException e){
 					System.out.println("삭제하려는 파일이 존재하지 않음");
@@ -117,12 +118,13 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
 		bean.setContent(content);
-		bean.setImage_id(image_id);
-		//bean.setCreate_date(create_date);
+		bean.setImage_id(fileName);
 				
 		dDao.updateDiaryInfo(bean);
+		iDao.deleteImageinfo(prevImage_id);
 		
 		request.setAttribute("user_id", user_id);
+		request.setAttribute("create_date", create_date);
 
 		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);

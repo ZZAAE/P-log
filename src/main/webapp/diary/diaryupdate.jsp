@@ -10,7 +10,7 @@ if(sessionUserId == null){
 }
 
 // 수정할 날짜
-String date = request.getParameter("date");
+String date = request.getParameter("selectedDate");
 if(date == null || date.trim().isEmpty()){
   date = java.time.LocalDate.now().toString();
 }
@@ -32,12 +32,12 @@ try{
     String imageId = dto.getImage_id();
     if(imageId != null && !imageId.trim().isEmpty()){
       ImageDAO iDao = new ImageDAO();
-      String dbPath = iDao.getImageinfoPath(imageId); // "/resources/img/xxx" 권장
-      if(dbPath != null && !dbPath.trim().isEmpty()){
-        // 혹시 resources/img/xxx 처럼 /가 없으면 보정
-        if(dbPath.startsWith("/")) imagePath = request.getContextPath() + dbPath;
-        else imagePath = request.getContextPath() + "/" + dbPath;
-      }
+      imagePath = iDao.getImageinfoPath(imageId); // "/resources/img/xxx" 권장
+      //if(dbPath != null && !dbPath.trim().isEmpty()){
+      //  // 혹시 resources/img/xxx 처럼 /가 없으면 보정
+      //  if(dbPath.startsWith("/")) imagePath = request.getContextPath() + dbPath;
+      //  else imagePath = request.getContextPath() + "/" + dbPath;
+      //}
     }
   }
 }catch(Exception e){
@@ -120,7 +120,7 @@ try{
 
   <!-- ✅ 수정 폼 -->
   <form id="updateForm"
-        action="<%=request.getContextPath()%>/DiaryUpdateProc.do"
+        action="<%=request.getContextPath()%>/diary/DiaryUpdateCon.do"
         method="post"
         enctype="multipart/form-data">
 

@@ -1,158 +1,275 @@
+<%@page import="advise.AdviseinfoDAO"%>
+<%@ page import="image.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Calendar"%>
 <%@ page import="diary.DiaryinfoDTO" %>
 <%
 request.setCharacterEncoding("UTF-8");
 
-// 로그인 체크
 String userId = (String)session.getAttribute("user_id");
-if(userId == null){
-  response.sendRedirect("../user/login.jsp");
-  return;
-}
+if(userId == null){ response.sendRedirect("../user/login.jsp"); return; }
 
-// Preview.do에서 전달된 값
-DiaryinfoDTO preview = (DiaryinfoDTO)request.getAttribute("preview");
+// 조회 날짜
+//String date = request.getParameter("selectedDate");
 String date = (String)request.getAttribute("selectedDate");
 if(date == null || date.trim().isEmpty()){
   date = java.time.LocalDate.now().toString();
 }
 
-String imagePath = (String)request.getAttribute("imagePath");
-System.out.println("Preview.jsp imagePath: " + imagePath);
-// ✅ imagePath -> imgSrc 보정 (/resources/... 또는 resources/... 모두 OK)
-String imgSrc = null;
-if(imagePath != null && !imagePath.trim().isEmpty()){
-  if(imagePath.startsWith("/")) imgSrc = request.getContextPath() + imagePath;
-  else imgSrc = request.getContextPath() + "/" + imagePath;
+//Preview.do에서 전달된 값
+DiaryinfoDTO preview = (DiaryinfoDTO)request.getAttribute("preview");
+//String date = (String)request.getAttribute("selectedDate");
+if(date == null || date.trim().isEmpty()){
+date = java.time.LocalDate.now().toString();
 }
 
-// 데이터
-String content = (preview == null || preview.getContent() == null) ? "" : preview.getContent();
-int emotion = (preview == null) ? 0 : preview.getEmotion();
+String imagePath = (String)request.getAttribute("imagePath");
+System.out.println("Preview.jsp imagePath: " + imagePath);
+
+// left calendar month/year = date 기준
+int year = Integer.parseInt(date.substring(0,4));
+int month = Integer.parseInt(date.substring(5,7));
+
+Calendar cal = Calendar.getInstance();
+cal.set(year, month - 1, 1);
+int week = cal.get(Calendar.DAY_OF_WEEK);
+int weekMon = (week == Calendar.SUNDAY) ? 7 : (week - 1); // Mon=1 ... Sun=7
+int lastDay = cal.getActualMaximum(Calendar.DATE);
+
+// 오늘
+Calendar today = Calendar.getInstance();
+int ty = today.get(Calendar.YEAR);
+int tm = today.get(Calendar.MONTH) + 1;
+int td = today.get(Calendar.DATE);
+
+/*
+  ===== 실제 데이터 바인딩 자리 =====
+*/
+AdviseinfoDAO aDao = new AdviseinfoDAO();
+//String advice = (String)request.getAttribute("advice");
+String advice = aDao.getAdviseininfo(preview.getAdvise_id());
+if(advice == null) advice = "내일은 더 좋은 하루를 보내길 바라요.";
+
+//String content = (String)request.getAttribute("content");
+String content = preview.getContent();
+if(content == null) content = "오늘은 수민이를 만나서 떡볶이를 먹었다. 처음 가보는 떡볶이 집이었는데 만족! 다음은 그 옆에 있는 토마토라면 집에 가보기로 했다. 기대돼!! 벌써 배고픈 느낌...";
+
+String imageUrl = (String)request.getAttribute("imagePath");
+if(imageUrl == null) imageUrl = request.getContextPath() + "/images/sample_dog.jpg";
+
+//Integer emotion = (Integer)request.getAttribute("emotion"); // 1~5
+Integer emotion = preview.getEmotion();
+if(emotion == null) emotion = 4;
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>일기 미리보기</title>
+<title>일기 조회</title>
 
-<!-- ✅ 작성페이지와 같은 CSS 사용 -->
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/diary.css">
-<link rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap">
-
-<style>
-  /* preview 전용 보정 (작성 CSS를 해치지 않게 최소만) */
-
-  /* 상단 아이콘 SVG */
-  .icon-btn svg{ width:18px; height:18px; display:block; }
-
-  /* 읽기 전용 textarea */
-  .diary-input[readonly]{ background:transparent; }
-
-  /* 기분: 선택한 것만 선명 */
-  .emoji-row .emoji-btn{ opacity:.25; transition:opacity .15s ease, transform .15s ease; }
-  .emoji-row .emoji-btn.active{ opacity:1; transform:scale(1.05); }
-
-  /* 이미지 없을 때 안내문(작성페이지 imgHint 느낌) */
-  #imgHint{
-    color:#6b7280;
-    font-weight:800;
-    letter-spacing:-.2px;
-  }
-</style>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
 <script>
-  function goDelete(){
-    if(confirm("정말 삭제하시겠습니까?")){
-      location.href = "<%=request.getContextPath()%>/diary/DiaryDeleteCon.do?create_date=<%=date%>";
-    }
+  function openDeleteModal(){
+    const overlay = document.getElementById("deleteOverlay");
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden", "false");
   }
+
+  function closeDeleteModal(){
+    const overlay = document.getElementById("deleteOverlay");
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden", "true");
+  }
+
+  function confirmDelete(){
+    const url = document.getElementById("deleteConfirmYes").getAttribute("data-delete-url");
+    window.location.href = url;
+  }
+
+  window.addEventListener("DOMContentLoaded", function(){
+    const overlay = document.getElementById("deleteOverlay");
+
+    // overlay 바깥 클릭 시 닫기
+    overlay.addEventListener("click", function(e){
+      if(e.target === overlay) closeDeleteModal();
+    });
+
+    // ESC 닫기
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") closeDeleteModal();
+    });
+  });
 </script>
 </head>
 
 <body>
-<div class="phone">
-
-  <!-- ✅ 작성페이지와 동일한 상단바 구조 -->
-  <header class="topbar">
-
-    <!-- ✅ 메인(캘린더) -->
-    <button type="button"
-            class="icon-btn back"
-            onclick="location.href='<%=request.getContextPath()%>/diary/calendarMain.jsp'"
-            aria-label="메인">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="currentColor" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"/>
-      </svg>
-    </button>
-
-    <!-- ✅ 날짜 가운데 -->
-    <div class="date-wrap">
-      <div class="date-text"><%=date%></div>
-      <div class="date-line"></div>
+  <!-- 상단바(공통) -->
+  <div class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__logo">P-log</div>
+      <a class="topbar__profile" href="#" aria-label="프로필">
+        <span class="topbar__profileIcon" aria-hidden="true"></span>
+      </a>
     </div>
-
-    <!-- ✅ 우측 상단 수정/삭제 -->
-    <div class="actions">
-
-      <!-- 수정 -->
-      <button type="button" class="icon-btn circle"
-        onclick="location.href='<%=request.getContextPath()%>/diary/diaryupdate.jsp?date=<%=date%>'"
-        aria-label="수정">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor"
-            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.33H5v-.92l8.48-8.48.92.92-8.48 8.48zM20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"/>
-        </svg>
-      </button>
-
-      <!-- 삭제 -->
-      <button type="button" class="icon-btn circle" onclick="goDelete()" aria-label="삭제">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor"
-            d="M6 7h12l-1 14H7L6 7zm3-3h6l1 2H8l1-2zm-3 2h12v2H6V6z"/>
-        </svg>
-      </button>
-
-    </div>
-  </header>
-
-  <!-- ✅ 기분 표시 (선택한 것만 active) -->
-  <section class="emoji-row">
-    <div class="emoji-btn <%= (emotion==1 ? "active" : "") %>">
-      <img src="<%=request.getContextPath()%>/resources/mood/mood1.png" alt="아주 나쁨">
-    </div>
-    <div class="emoji-btn <%= (emotion==4 ? "active" : "") %>">
-      <img src="<%=request.getContextPath()%>/resources/mood/mood4.png" alt="나쁨">
-    </div>
-    <div class="emoji-btn <%= (emotion==3 ? "active" : "") %>">
-      <img src="<%=request.getContextPath()%>/resources/mood/mood3.png" alt="보통">
-    </div>
-    <div class="emoji-btn <%= (emotion==5 ? "active" : "") %>">
-      <img src="<%=request.getContextPath()%>/resources/mood/mood5.png" alt="좋음">
-    </div>
-    <div class="emoji-btn <%= (emotion==2 ? "active" : "") %>">
-      <img src="<%=request.getContextPath()%>/resources/mood/mood2.png" alt="아주 좋음">
-    </div>
-  </section>
-
-  <!-- ✅ 이미지 영역: 작성페이지와 동일하게 imgBox 사용 -->
-  <div class="photo-area imgBox <%= (imagePath == null ? "" : "show") %>">
-    <% if(imagePath != null){ %>
-      <img src="<%=imagePath%>" class="photo" alt="일기 이미지">
-    <% } else { %>
-      <div id="imgHint">이미지 없음</div>
-    <% } %>
   </div>
 
-  <!-- ✅ 큰 테이블(작성페이지와 동일) -->
-  <section class="content-area">
-    <div class="content-box">
-      <textarea class="diary-input" readonly><%=content%></textarea>
-    </div>
-  </section>
+  <div class="desktop-layout">
+    <!-- 좌측 패널(공통) -->
+    <aside class="desktop-side desktop-side--left">
+      <div class="left-cal">
+        <div class="left-cal__nav">
+          <a class="left-cal__btn"
+             href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=
+               (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d",(month-1))+"-01")
+             %>">‹</a>
 
-</div>
+          <div class="left-cal__title"><%=year%>. <%=String.format("%02d",month)%>.</div>
+
+          <a class="left-cal__btn"
+             href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=
+               (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d",(month+1))+"-01")
+             %>">›</a>
+        </div>
+
+        <div class="left-cal__dow">
+          <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+        </div>
+
+        <div class="left-cal__grid">
+          <%
+          Calendar preCal = (Calendar)cal.clone();
+          preCal.add(Calendar.MONTH, -1);
+          int preLastDay = preCal.getActualMaximum(Calendar.DATE);
+          int preStartDay = preLastDay - (weekMon - 2);
+
+          for(int i=0;i<weekMon-1;i++){
+          %>
+            <div class="d inactive"><%=preStartDay+i%></div>
+          <%
+          }
+
+          int dayCount = weekMon - 1;
+          for(int d=1; d<=lastDay; d++){
+            String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
+          %>
+            <a class="d no_diary<%=todayClass%>"
+               href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=year%>-<%=String.format("%02d",month)%>-<%=String.format("%02d",d)%>"><%=d%></a>
+          <%
+            dayCount++;
+          }
+
+          int remain=1;
+          while(dayCount % 7 != 0){
+          %>
+            <div class="d inactive"><%=remain++%></div>
+          <%
+            dayCount++;
+          }
+          %>
+        </div>
+      </div>
+
+      <div class="panel-card panel-card--month">
+        <p class="panel-cardTitle">1월 달 기분 현황</p>
+        <div class="panel-month" aria-label="월간 기분 현황 차트 영역"></div>
+      </div>
+    </aside>
+
+    <!-- 중앙: 조회 UI (390 고정) -->
+    <main class="desktop-center">
+      <div class="phone">
+        <!-- 상단: 날짜 + 연필(수정) -->
+        <header class="view-top">
+          <div class="date-wrap">
+            <div class="date-text"><%=date%></div>
+            <div class="date-line"></div>
+          </div>
+
+          <a class="icon-btn pencil"
+             href="<%=request.getContextPath()%>/diary/diaryupdate.jsp?selectedDate=<%=date%>"
+             aria-label="수정"></a>
+        </header>
+
+        <!-- 감정(1개) + 조언 -->
+        <section class="view-emotion">
+          <div class="emotion-one">
+            <img src="<%=request.getContextPath()%>/resources/mood/mood<%=emotion%>.png" alt="emotion">
+          </div>
+          <div class="advice-pill"><%=advice%></div>
+        </section>
+
+        <!-- 이미지 -->
+        <section class="view-photo">
+          <img src="<%=imageUrl%>" alt="diary photo">
+        </section>
+
+        <!-- 본문 -->
+        <section class="view-content">
+          <div class="content-box">
+            <pre class="content-text"><%=content%></pre>
+          </div>
+        </section>
+
+        <!-- 삭제 버튼: 이제 바로 삭제하지 않고 모달 오픈 -->
+        <button type="button" class="trash-btn" onclick="openDeleteModal()" aria-label="삭제"></button>
+      </div>
+    </main>
+
+    <!-- 우측 패널(공통 소식) -->
+    <aside class="desktop-side desktop-side--right">
+      <h2 class="panel-title">소식</h2>
+
+      <div class="news-list">
+        <article class="news-card">
+          <div class="news-avatar" aria-hidden="true"></div>
+          <div class="news-body">
+            <div class="news-name">smile1225 님</div>
+            <div class="news-text">
+              <span class="news-message">
+                혼자 산책 다녀왔다... 요즘 날씨가 춥네 내일은 해피 공원에 가야겠다. 요즘 혼자 산책을 즐기는 중...
+              </span>
+              <span class="news-emoji">
+                <img src="<%=request.getContextPath()%>/images/emotion_angry.png" alt="emotion">
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 삭제 확인 모달 (페이지 위 오버레이) -->
+  <div id="deleteOverlay" class="confirm-overlay" aria-hidden="true">
+    <div class="confirm-modal" role="dialog" aria-modal="true" aria-label="삭제 확인">
+      <div class="confirm-head">
+        <!-- 임시 SVG(빨간 휴지통) -->
+        <span class="confirm-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 3h6l1 2h4v2H4V5h4l1-2z" fill="#FF4D4F"/>
+            <path d="M7 9h2v10H7V9zm4 0h2v10h-2V9zm4 0h2v10h-2V9z" fill="#FF4D4F"/>
+            <path d="M6 7h12l-1 14H7L6 7z" stroke="#FF4D4F" stroke-width="1.2" fill="none"/>
+          </svg>
+        </span>
+        <span class="confirm-title">삭제하시겠습니까?</span>
+      </div>
+
+      <div class="confirm-actions">
+        <button id="deleteConfirmYes"
+                type="button"
+                class="confirm-btn confirm-yes"
+                data-delete-url="<%=request.getContextPath()%>/diary/DiaryDeleteCon.do?create_date=<%=date%>"
+                onclick="confirmDelete()">예</button>
+
+        <button type="button"
+                class="confirm-btn confirm-no"
+                onclick="closeDeleteModal()">아니요</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

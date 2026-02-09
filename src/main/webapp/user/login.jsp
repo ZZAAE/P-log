@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <title>Login</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/login_css.css">
 </head>
@@ -25,8 +27,7 @@
       }
     %>
 
-    <%-- <form class="form" action="<%=request.getContextPath()%>/user/LoginCon.do" method="post"> --%>
-    <form class="form" action="LoginCon.do" method="post">
+    <form class="form" action="<%=request.getContextPath()%>/user/LoginCon.do" method="post">
       <input class="input" type="text" name="user_id" placeholder="아이디를 입력해주세요." required>
       <input class="input" type="password" name="user_pw" placeholder="비밀번호를 입력해주세요." required>
 
