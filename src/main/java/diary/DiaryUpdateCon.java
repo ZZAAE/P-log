@@ -56,16 +56,22 @@ public class DiaryUpdateCon extends HttpServlet {
 
 		String prevImage_path = request.getServletContext().getRealPath("/resources/img/") + prevImage_id;
 		
-		
-		Part imgFile = request.getPart("file");
-		String jspPath = request.getContextPath() + "/resources/img/";
-		String realPath = request.getServletContext().getRealPath("/resources/img/");
+		String jspPath = "";
+		String realPath = "";
 		String fileName = "";
+		Part imgFile = request.getPart("file");
+		if(imgFile != null) {
+			jspPath = request.getContextPath() + "/resources/img/";
+			realPath = request.getServletContext().getRealPath("/resources/img/");
+		}
+		
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
 		
-		if(!imgFile.getSubmittedFileName().equals(""))  {
+		System.out.println("update file check: " + imgFile.getSubmittedFileName());
+		
+		if(!imgFile.getSubmittedFileName().isEmpty())  {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);

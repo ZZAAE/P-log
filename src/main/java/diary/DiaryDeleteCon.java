@@ -2,6 +2,7 @@ package diary;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -44,24 +45,32 @@ public class DiaryDeleteCon extends HttpServlet {
 		DiaryinfoDTO bean = dDao.getDiaryInfo(diary_id);
 		
 		String image_id = bean.getImage_id();
-		String realPath = request.getServletContext().getRealPath("/resources/img/"+image_id);
-		Path oldFilePath = Paths.get(realPath);
-		try {
-			Files.delete(oldFilePath);
-		}
-		catch(NoSuchFileException e){
-			System.out.println("삭제하려는 파일이 존재하지 않음");
-			return;
-		}
-		catch (IOException e) {            
-			e.printStackTrace();
-			return;
+		if(image_id != null) {
+			String realPath = request.getServletContext().getRealPath("/resources/img/"+image_id);
+			Path oldFilePath = Paths.get(realPath);
+			try {
+				Files.delete(oldFilePath);
+			}
+			catch(NoSuchFileException e){
+				System.out.println("삭제하려는 파일이 존재하지 않음");
+			}
+			catch (IOException e) {            
+				e.printStackTrace();
+			}
 		}
 		
 		dDao.deleteDirayInfo(diary_id);
-		iDao.deleteImageinfo(image_id);
+		if(image_id != null) {
+			iDao.deleteImageinfo(image_id);
+		}
+		
+		response.setContentType("text/html; charset=UTF-8");
+	    PrintWriter out = response.getWriter();
+	    out.println("<script>alert('일기가 삭제 되었습니다!'); location.href='" + request.getContextPath() + "/diary/CalendarMain.do';</script>");
+	    out.flush();
+	    out.close();
 				
-		RequestDispatcher dis = request.getRequestDispatcher("CalendarMain.do");
-		dis.forward(request, response);		
+//		RequestDispatcher dis = request.getRequestDispatcher("CalendarMain.do");
+//		dis.forward(request, response);		
 	}
 }

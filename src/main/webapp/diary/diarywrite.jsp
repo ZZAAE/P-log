@@ -96,9 +96,9 @@ int td = today.get(Calendar.DATE);
     <aside class="desktop-side desktop-side--left">
       <div class="left-cal">
         <div class="left-cal__nav">
-          <a class="left-cal__btn" href="<%=request.getContextPath()%>/diary/DiaryWriteCon?date=<%= (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d", (month-1))+"-01") %>">‹</a>
+          <a class="left-cal__btn" href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d", (month-1))+"-01") %>">‹</a>
           <div class="left-cal__title"><%=year%>. <%=String.format("%02d", month)%>.</div>
-          <a class="left-cal__btn" href="<%=request.getContextPath()%>/diary/DiaryWriteCon?date=<%= (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d", (month+1))+"-01") %>">›</a>
+          <a class="left-cal__btn" href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d", (month+1))+"-01") %>">›</a>
         </div>
 
         <div class="left-cal__dow">
@@ -124,7 +124,7 @@ int td = today.get(Calendar.DATE);
             String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
           %>
             <a class="d no_diary<%=todayClass%>"
-               href="<%=request.getContextPath()%>/diary/DiaryWriteCon?date=<%=year%>-<%=String.format("%02d",month)%>-<%=String.format("%02d",d)%>"><%=d%></a>
+               href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%=year%>-<%=String.format("%02d",month)%>-<%=String.format("%02d",d)%>"><%=d%></a>
           <%
             dayCount++;
           }
