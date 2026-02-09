@@ -6,8 +6,8 @@
 <%
 request.setCharacterEncoding("UTF-8");
 
-String userId = (String)session.getAttribute("user_id");
-if(userId == null){ response.sendRedirect("../user/login.jsp"); return; }
+/* String userId = (String)session.getAttribute("user_id");
+if(userId == null){ response.sendRedirect("../user/login.jsp"); return; } */
 
 // 조회 날짜
 //String date = request.getParameter("selectedDate");
@@ -48,17 +48,21 @@ int td = today.get(Calendar.DATE);
 AdviseinfoDAO aDao = new AdviseinfoDAO();
 //String advice = (String)request.getAttribute("advice");
 String advice = aDao.getAdviseininfo(preview.getAdvise_id());
+//String advice = null;
 if(advice == null) advice = "내일은 더 좋은 하루를 보내길 바라요.";
 
 //String content = (String)request.getAttribute("content");
 String content = preview.getContent();
+//String content = null;
 if(content == null) content = "오늘은 수민이를 만나서 떡볶이를 먹었다. 처음 가보는 떡볶이 집이었는데 만족! 다음은 그 옆에 있는 토마토라면 집에 가보기로 했다. 기대돼!! 벌써 배고픈 느낌...";
 
 String imageUrl = (String)request.getAttribute("imagePath");
+//String imageUrl = null;
 if(imageUrl == null) imageUrl = request.getContextPath() + "/images/sample_dog.jpg";
 
 //Integer emotion = (Integer)request.getAttribute("emotion"); // 1~5
 Integer emotion = preview.getEmotion();
+//Integer emotion = null;
 if(emotion == null) emotion = 4;
 %>
 <!DOCTYPE html>
@@ -68,7 +72,10 @@ if(emotion == null) emotion = 4;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>일기 조회</title>
 
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css">
+<%-- <link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css"> --%>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+<link rel="stylesheet"
+   href="<%=request.getContextPath()%>/css/diary.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
 <script>

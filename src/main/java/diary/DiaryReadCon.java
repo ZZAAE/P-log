@@ -1,6 +1,5 @@
 package diary;
-
-
+import java.util.UUID;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
