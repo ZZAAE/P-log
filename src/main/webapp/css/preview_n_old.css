@@ -18,17 +18,6 @@ body{
   align-items:center;
 }
 
-:root {
-  --emotion-angry: #FFB3BA;
-  --emotion-bad: #E0E0E0;
-  --emotion-neutral: #BAFFC9;
-  --emotion-smile: #BAE1FF;
-  --emotion-happy: #FFFFBA;
-
-  --text-primary: #000000;
-  --background-color: #FFFFFF;
-}
-
 /* =========================
    Topbar
 ========================= */
@@ -159,17 +148,6 @@ body{
   outline:2px solid rgba(0,0,0,0.12);
   outline-offset:-2px;
 }
-
-/* 감정 수치에 따른 배경색 (파스텔톤) */
-.emotion_1 { background-color: var(--emotion-angry); } /* 아주 나쁨 */
-.emotion_2 { background-color: var(--emotion-bad); } /* 나쁨 */
-.emotion_3 { background-color: var(--emotion-neutral); } /* 보통 */
-.emotion_4 { background-color: var(--emotion-smile); } /* 좋음 */
-.emotion_5 { background-color: var(--emotion-happy); } /* 아주 좋음 */
-
-/* 데이터 없는 날 */
-.no_diary { background-color: transparent; color: #333; }
-.no_diary:hover { background-color: #f0f0f0; }
 
 /* Left month card */
 .panel-card{

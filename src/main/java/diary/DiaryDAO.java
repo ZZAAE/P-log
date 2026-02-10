@@ -34,7 +34,8 @@ public class DiaryDAO {
 	public void insertDiaryInfo(DiaryinfoDTO dDto) {
 		try {
 			connect();
-			String query = "insert into diaryinfo values(diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
+			String query = "insert into diaryinfo (DIARY_ID, USER_ID, ADVISE_ID, EMOTION, CONTENT, IMAGE_ID, CREATE_DATE) "
+                    + "values (diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, dDto.getUser_id());
 			pstmt.setInt(2, dDto.getAdvise_id());
@@ -42,7 +43,6 @@ public class DiaryDAO {
 			pstmt.setString(4, dDto.getContent());
 			pstmt.setString(5, dDto.getImage_id());
 			Date date = Date.valueOf(dDto.getCreate_date());
-			System.out.println(date);
 			pstmt.setDate(6, date);
 			int result = pstmt.executeUpdate();
 			con.close();
@@ -195,6 +195,23 @@ public class DiaryDAO {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	// 월간차트 계산기
+	public int[] getMonthlyEmotionSummary(String user_id, int year, int month) {
+		CalendarDAO cdao = new CalendarDAO();
+		// 1) 날짜 계산 로직
+		java.util.Calendar mc = java.util.Calendar.getInstance();
+		mc.set(year, month - 1, 1);
+		int lastDay = mc.getActualMaximum(java.util.Calendar.DATE);
+
+		String start = String.format("%04d-%02d-01", year, month);
+		String end = String.format("%04d-%02d-%02d", year, month, lastDay);
+
+		// 2) DB 조회 로직
+		return  cdao.selectMonthEmotionCounts(user_id, start, end);
+		
+		
 	}
 	
 }

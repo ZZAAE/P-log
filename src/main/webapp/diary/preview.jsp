@@ -1,3 +1,4 @@
+<%@page import="java.util.Vector"%>
 <%@page import="advise.AdviseinfoDAO"%>
 <%@ page import="image.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -6,8 +7,15 @@
 <%
 request.setCharacterEncoding("UTF-8");
 
-/* String userId = (String)session.getAttribute("user_id");
-if(userId == null){ response.sendRedirect("../user/login.jsp"); return; } */
+String userId = (String)session.getAttribute("user_id");
+if(userId == null){ response.sendRedirect("../user/login.jsp"); return; }
+Vector<DiaryinfoDTO> bean = (Vector<DiaryinfoDTO>) request.getAttribute("bean");
+int[] monthCounts = (int[]) request.getAttribute("monthCounts");
+
+// 혹시 데이터가 없을 경우를 대비해 기본값 설정
+if (monthCounts == null) {
+    monthCounts = new int[]{0, 0, 0, 0, 0};
+}
 
 // 조회 날짜
 //String date = request.getParameter("selectedDate");
@@ -18,7 +26,6 @@ if(date == null || date.trim().isEmpty()){
 
 //Preview.do에서 전달된 값
 DiaryinfoDTO preview = (DiaryinfoDTO)request.getAttribute("preview");
-//String date = (String)request.getAttribute("selectedDate");
 if(date == null || date.trim().isEmpty()){
 date = java.time.LocalDate.now().toString();
 }
@@ -48,21 +55,17 @@ int td = today.get(Calendar.DATE);
 AdviseinfoDAO aDao = new AdviseinfoDAO();
 //String advice = (String)request.getAttribute("advice");
 String advice = aDao.getAdviseininfo(preview.getAdvise_id());
-//String advice = null;
 if(advice == null) advice = "내일은 더 좋은 하루를 보내길 바라요.";
 
 //String content = (String)request.getAttribute("content");
 String content = preview.getContent();
-//String content = null;
 if(content == null) content = "오늘은 수민이를 만나서 떡볶이를 먹었다. 처음 가보는 떡볶이 집이었는데 만족! 다음은 그 옆에 있는 토마토라면 집에 가보기로 했다. 기대돼!! 벌써 배고픈 느낌...";
 
 String imageUrl = (String)request.getAttribute("imagePath");
-//String imageUrl = null;
 if(imageUrl == null) imageUrl = request.getContextPath() + "/images/sample_dog.jpg";
 
 //Integer emotion = (Integer)request.getAttribute("emotion"); // 1~5
 Integer emotion = preview.getEmotion();
-//Integer emotion = null;
 if(emotion == null) emotion = 4;
 %>
 <!DOCTYPE html>
@@ -72,10 +75,7 @@ if(emotion == null) emotion = 4;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>일기 조회</title>
 
-<%-- <link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css"> --%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-<link rel="stylesheet"
-   href="<%=request.getContextPath()%>/css/diary.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
 <script>
@@ -110,13 +110,14 @@ if(emotion == null) emotion = 4;
     });
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
   <!-- 상단바(공통) -->
   <div class="topbar">
     <div class="topbar__inner">
-      <div class="topbar__logo">P-log</div>
+      <a class="topbar__logo" href="<%=request.getContextPath()%>/diary/CalendarMain.do">P-log</a>
       <a class="topbar__profile" href="#" aria-label="프로필">
         <span class="topbar__profileIcon" aria-hidden="true"></span>
       </a>
@@ -128,17 +129,7 @@ if(emotion == null) emotion = 4;
     <aside class="desktop-side desktop-side--left">
       <div class="left-cal">
         <div class="left-cal__nav">
-          <a class="left-cal__btn"
-             href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=
-               (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d",(month-1))+"-01")
-             %>">‹</a>
-
           <div class="left-cal__title"><%=year%>. <%=String.format("%02d",month)%>.</div>
-
-          <a class="left-cal__btn"
-             href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=
-               (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d",(month+1))+"-01")
-             %>">›</a>
         </div>
 
         <div class="left-cal__dow">
@@ -161,10 +152,33 @@ if(emotion == null) emotion = 4;
           int dayCount = weekMon - 1;
           for(int d=1; d<=lastDay; d++){
             String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
-          %>
-            <a class="d no_diary<%=todayClass%>"
-               href="<%=request.getContextPath()%>/diary/Preview.do?selectedDate=<%=year%>-<%=String.format("%02d",month)%>-<%=String.format("%02d",d)%>"><%=d%></a>
-          <%
+            String Fmonth = month < 10 ? "0"+month : String.valueOf(month);
+            String Fday = d < 10 ? "0"+d : String.valueOf(d);
+            String Cdate = year + "-" + Fmonth + "-" + Fday;
+            
+            DiaryinfoDTO foundDto = null;
+            if(bean != null){
+              for(DiaryinfoDTO dto : bean){
+                if(dto.getCreate_date().equals(Cdate)){
+                  foundDto = dto; break;
+                }
+              }
+            }
+            if(foundDto != null){
+            %>
+                <a class="d emotion_<%=foundDto.getEmotion()%><%=todayClass%>"
+                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                   <%=d%>
+                </a>
+            <%
+            } else {
+            %>
+                <a class="d no_diary<%=todayClass%>"
+                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                   <%=d%>
+                </a>
+            <%
+            }
             dayCount++;
           }
 
@@ -180,8 +194,10 @@ if(emotion == null) emotion = 4;
       </div>
 
       <div class="panel-card panel-card--month">
-        <p class="panel-cardTitle">1월 달 기분 현황</p>
-        <div class="panel-month" aria-label="월간 기분 현황 차트 영역"></div>
+        <p class="panel-cardTitle"><%=month %>월 기분 현황</p>
+        <div class="chart-container">
+    		<canvas id="monthChart"></canvas>
+		</div>
       </div>
     </aside>
 
@@ -190,6 +206,7 @@ if(emotion == null) emotion = 4;
       <div class="phone">
         <!-- 상단: 날짜 + 연필(수정) -->
         <header class="view-top">
+        <button type="button" class="icon-btn back" onclick="location.href='CalendarMain.do'">‹</button>
           <div class="date-wrap">
             <div class="date-text"><%=date%></div>
             <div class="date-line"></div>
@@ -277,6 +294,108 @@ if(emotion == null) emotion = 4;
       </div>
     </div>
   </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. 데이터 준비
+    const monthData = [
+        <%= monthCounts[0] %>, <%= monthCounts[1] %>, <%= monthCounts[2] %>, <%= monthCounts[3] %>, <%= monthCounts[4] %>
+    ];
+    
+    // 2. 하단 이미지를 그리기 위한 커스텀 플러그인 정의
+    const xEmojiLabelsPlugin = {
+        id: 'xEmojiLabelsPlugin',
+        afterDraw(chart) {
+            const opts = chart.options.plugins.xEmojiLabelsPlugin;
+            if (!opts || !opts.images) return;
+
+            const ctx = chart.ctx;
+            const xAxis = chart.scales.x;
+            const size = opts.size || 22;
+            const yOffset = opts.yOffset || 14;
+
+            ctx.save();
+            xAxis.ticks.forEach((tick, i) => {
+                const img = opts.images[i];
+                if (img && img.complete) {
+                    const x = xAxis.getPixelForTick(i);
+                    const y = xAxis.bottom + yOffset;
+                    ctx.drawImage(img, x - size/2, y - size/2, size, size);
+                }
+            });
+            ctx.restore();
+        }
+    };
+
+    // 3. 이미지 객체 생성 및 로드
+    const moodSrcs = [
+        '<%=request.getContextPath()%>/image/화남.png',
+        '<%=request.getContextPath()%>/image/안좋음.png',
+        '<%=request.getContextPath()%>/image/무표정.png',
+        '<%=request.getContextPath()%>/image/웃음.png',
+        '<%=request.getContextPath()%>/image/빵긋.png'
+    ];
+    
+    const moodImgs = moodSrcs.map(src => {
+        const img = new Image();
+        img.src = src;
+        return img;
+    });
+
+    // 4. 모든 이미지가 로드된 후 차트 생성 (비동기 처리)
+    Promise.all(moodImgs.map(img => {
+        return new Promise(resolve => {
+            if (img.complete) resolve();
+            else img.onload = resolve;
+        });
+    })).then(() => {
+        const canvas = document.getElementById('monthChart');
+        if(!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['', '', '', '', ''], // 이미지 자리를 위해 비움
+                datasets: [{
+                    label: '이번 달 기분 통계',
+                    data: monthData,
+                    backgroundColor: ['#FF9AA2', '#D3D3D3', '#B5EAD7', '#A0D8FF', '#FFE066'],
+                    borderColor: ['#FF5C5C', '#9E9E9E', '#4CAF50', '#2196F3', '#FBC02D'],
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { bottom: 30 } // 이미지 공간 확보
+                },
+                plugins: {
+                    legend: { display: false },
+                    xEmojiLabelsPlugin: { 
+                        images: moodImgs, 
+                        size: 24, 
+                        yOffset: 18 
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { display: false },
+                        ticks: { display: false } // 수치 숨김
+                    }
+                }
+            },
+            plugins: [xEmojiLabelsPlugin] // ✅ 플러그인 등록 확인
+        });
+    });
+});
+</script>
+
+
 
 </body>
 </html>

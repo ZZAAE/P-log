@@ -88,7 +88,7 @@ int td = today.get(Calendar.DATE);
    <div class="topbar">
       <div class="topbar__inner">
          <!-- 왼쪽 -->
-         <div class="topbar__logo">P-log</div>
+           <a class="topbar__logo" href="<%=request.getContextPath()%>/diary/CalendarMain.do">P-log</a>
          <!-- 오른쪽 -->
          <div class="topbar__right">
             <!-- 집 아이콘 -->
