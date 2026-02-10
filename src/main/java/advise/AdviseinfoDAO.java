@@ -73,8 +73,7 @@ public class AdviseinfoDAO {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}return advise_content;
-		
-	}
-	
+		}		
+		return advise_content;		
+	}	
 }

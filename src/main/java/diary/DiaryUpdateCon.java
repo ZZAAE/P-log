@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -77,9 +78,9 @@ public class DiaryUpdateCon extends HttpServlet {
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
 		
-		System.out.println("update file check: " + imgFile.getSubmittedFileName());
-		
+	
 		if(!imgFile.getSubmittedFileName().isEmpty())  {
+		//if(imgFile != null)  {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
@@ -130,13 +131,24 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
 		bean.setContent(content);
-		bean.setImage_id(fileName);
+		if(!imgFile.getSubmittedFileName().isEmpty()) {
+			bean.setImage_id(fileName);
+		}else {
+			bean.setImage_id(prevImage_id);
+		}
+			
 				
 		dDao.updateDiaryInfo(bean);
-		iDao.deleteImageinfo(prevImage_id);
+		if(!imgFile.getSubmittedFileName().isEmpty())
+			iDao.deleteImageinfo(prevImage_id);
 		
 		request.setAttribute("user_id", user_id);
 		request.setAttribute("create_date", create_date);
+		
+		//소식기능을 위한 타유저 일기정보 리스트 받음
+	    List<DiaryinfoDTO> otherUserBeans = dDao.getOtherUserDiaryInfoList(user_id);
+	    //DiaryWrite jsp에게 일기정보리스트 넘겨줌
+	    request.setAttribute("otherUserBeans", otherUserBeans);
 
 		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);

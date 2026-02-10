@@ -1,7 +1,9 @@
 package diary;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -99,8 +101,11 @@ public class CalendarMain extends HttpServlet {
       int weekScore = 0;
       if (cnt > 0) {
          double avg = (double) sum / cnt; // 1~5
-         weekScore = (int) Math.round((avg / 5.0) * 30.0);
+         weekScore = (int) Math.round((avg / 7.0) * 35.0);
       }
+      
+      //소식기능을 위한 타유저 일기정보 리스트 받음
+      List<DiaryinfoDTO> otherUserBeans = ddao.getOtherUserDiaryInfoList(user_id);
 
       // 4) JSP로
       request.setAttribute("user_id", user_id);
@@ -113,6 +118,8 @@ public class CalendarMain extends HttpServlet {
       request.setAttribute("weekEmotions", weekEmotions);
       request.setAttribute("monthCounts", monthCounts);
       request.setAttribute("weekScore", weekScore);
+      
+      request.setAttribute("otherUserBeans", otherUserBeans);
 
       RequestDispatcher dis = request.getRequestDispatcher("/diary/calendarMain.jsp");
       dis.forward(request, response);

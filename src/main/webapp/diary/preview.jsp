@@ -2,8 +2,11 @@
 <%@page import="advise.AdviseinfoDAO"%>
 <%@ page import="image.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page import="java.util.Calendar"%>
 <%@ page import="diary.DiaryinfoDTO" %>
+<%@ page import="java.util.List" %>
 <%
 request.setCharacterEncoding("UTF-8");
 
@@ -54,7 +57,9 @@ int td = today.get(Calendar.DATE);
 */
 AdviseinfoDAO aDao = new AdviseinfoDAO();
 //String advice = (String)request.getAttribute("advice");
+System.out.println("preview.getAdvise_id(): " + preview.getAdvise_id());
 String advice = aDao.getAdviseininfo(preview.getAdvise_id());
+System.out.println("advice: " + advice);
 if(advice == null) advice = "내일은 더 좋은 하루를 보내길 바라요.";
 
 //String content = (String)request.getAttribute("content");
@@ -76,7 +81,13 @@ if(emotion == null) emotion = 4;
 <title>일기 조회</title>
 
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/diary.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
 
 <script>
   function openDeleteModal(){
@@ -114,15 +125,38 @@ if(emotion == null) emotion = 4;
 </head>
 
 <body>
-  <!-- 상단바(공통) -->
-  <div class="topbar">
-    <div class="topbar__inner">
-      <a class="topbar__logo" href="<%=request.getContextPath()%>/diary/CalendarMain.do">P-log</a>
-      <a class="topbar__profile" href="#" aria-label="프로필">
-        <span class="topbar__profileIcon" aria-hidden="true"></span>
-      </a>
-    </div>
-  </div>
+  <!-- ✅ Topbar (calendar.css 기준 구조로 정리) -->
+   <div class="topbar">
+      <div class="topbar__inner">
+         <!-- 왼쪽 -->
+         <div class="topbar__logo">P-log</div>
+         <!-- 오른쪽 -->
+         <div class="topbar__right">
+            <!-- 집 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/CalendarMain.do"
+               aria-label="홈"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-house-door-fill"></i>
+            </span>
+            </a>
+            <!-- ✅ 갤러리 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/GalleryCon.do"
+               aria-label="갤러리"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-card-image"></i>
+            </span>
+            </a>
+            <!-- 사람 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/user/userinfo_update.jsp"
+               aria-label="프로필"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-person-fill"></i>
+            </span>
+            </a> <a class="topbar__logout"
+               href="${pageContext.request.contextPath}/user/LogoutCon.do">로그아웃</a>
+         </div>
+      </div>
+   </div>
 
   <div class="desktop-layout">
     <!-- 좌측 패널(공통) -->
@@ -211,18 +245,30 @@ if(emotion == null) emotion = 4;
             <div class="date-text"><%=date%></div>
             <div class="date-line"></div>
           </div>
-
-          <a class="icon-btn pencil"
+			
+          <a class="icon-btn pencil"          	
              href="<%=request.getContextPath()%>/diary/diaryupdate.jsp?selectedDate=<%=date%>"
              aria-label="수정"></a>
         </header>
 
-        <!-- 감정(1개) + 조언 -->
+		<!-- 감정(1개) + 조언 -->
         <section class="view-emotion">
           <div class="emotion-one">
             <img src="<%=request.getContextPath()%>/resources/mood/mood<%=emotion%>.png" alt="emotion">
           </div>
-          <div class="advice-pill"><%=advice%></div>
+          <%
+          DiaryinfoDTO foundDto = null;
+          if(bean != null){
+            for(DiaryinfoDTO dto : bean){
+              if(dto.getCreate_date().equals(date)){
+                foundDto = dto; break;
+              }
+            }
+          }
+          if(foundDto != null){   %>
+                <div class="advice-pill emotion_<%=foundDto.getEmotion()%>"><%=advice%></div>
+            <% } %>
+          
         </section>
 
         <!-- 이미지 -->
@@ -247,20 +293,34 @@ if(emotion == null) emotion = 4;
       <h2 class="panel-title">소식</h2>
 
       <div class="news-list">
-        <article class="news-card">
-          <div class="news-avatar" aria-hidden="true"></div>
-          <div class="news-body">
-            <div class="news-name">smile1225 님</div>
-            <div class="news-text">
-              <span class="news-message">
-                혼자 산책 다녀왔다... 요즘 날씨가 춥네 내일은 해피 공원에 가야겠다. 요즘 혼자 산책을 즐기는 중...
-              </span>
-              <span class="news-emoji">
-                <img src="<%=request.getContextPath()%>/images/emotion_angry.png" alt="emotion">
-              </span>
-            </div>
-          </div>
-        </article>
+        <c:forEach var="bean" items="${otherUserBeans}">
+				<c:if test="${bean.getEmotion() == 1}">
+					<c:set var="path" value="/image/화남.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 2}">
+					<c:set var="path" value="/image/안좋음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 3}">
+					<c:set var="path" value="/image/무표정.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 4}">
+					<c:set var="path" value="/image/웃음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 5}">
+					<c:set var="path" value="/image/빵긋.png"></c:set>
+				</c:if>
+				<article class="news-card">
+				<div class="news-avatar" aria-hidden="true"></div>
+				<div class="news-body">
+					<div class="news-name">${bean.getUser_id()} 님</div>
+					<div class="news-text">
+						<span class="news-message"> ${bean.getContent()}</span> <span class="news-emoji"> 
+							<img src="${pageContext.request.contextPath}${path}" alt="화남">
+						</span>
+					</div>
+				</div>
+				</article>
+			</c:forEach>
       </div>
     </aside>
   </div>

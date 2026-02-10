@@ -13,21 +13,21 @@
 }
 
 /* =========================
-   Left Calendar (Feature)
+   Left Calendar (공통)
 ========================= */
-.left-cal{
-  width:360px;
-  padding-top: 6px;
-  margin-left: 17px;
+.left-cal {
+    width: 360px;
+    padding-top: 6px;
+    margin-left: 17px;
 }
 
-.left-cal__nav{
-  display:flex;
-  align-items:center;
-  gap:18px;
-  padding-left: 6px;
-  margin-bottom: 30px;
-  margin-left: 70px;
+.left-cal__nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-left: 6px;
+    margin-bottom: 30px;
+    margin-left: 70px;
 }
 
 .left-cal__btn{
@@ -36,40 +36,31 @@
   font-size:28px;
   line-height:1;
 }
-
 .left-cal__title{
   font-size:22px;
   font-weight:600;
-  letter-spacing:0.3px;
+  letter-spacing:.3px;
 }
-
 .left-cal__dow{
   display:grid;
   grid-template-columns: repeat(7, 44px);
   gap:0;
-  padding-left: 6px;
-  margin-bottom: 12px;
+  padding-left:6px;
+  margin-bottom:12px;
   color:#333;
   font-weight:500;
   font-size:14px;
 }
-
-.left-cal__dow > div{
-  width:44px;
-  text-align:center;
-}
-
+.left-cal__dow > div{ width:44px; text-align:center; }
 .left-cal__grid{
   display:grid;
   grid-template-columns: repeat(7, 44px);
   gap:0;
-  padding-left: 6px;
+  padding-left:6px;
   margin-bottom: 68px;
 }
-
 .left-cal__grid .d{
-  width:44px;
-  height:44px;
+  width:44px; height:44px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -79,20 +70,23 @@
   font-size:16px;
   user-select:none;
 }
-
-.left-cal__grid .inactive{
-  color:#d0d0d0;
-  background:transparent;
-}
-
-.left-cal__grid a.no_diary{
-  background:#e0e0e0;
-}
-
+.left-cal__grid .inactive{ color:#d0d0d0; background:transparent; }
+.left-cal__grid a.no_diary{ background:#e0e0e0; }
 .left-cal__grid a.today{
-  outline: 2px solid rgba(0,0,0,0.12);
+  outline:2px solid rgba(0,0,0,0.12);
   outline-offset:-2px;
 }
+
+/* 감정 수치에 따른 배경색 (파스텔톤) */
+.emotion_1 { background-color: var(--emotion-angry); } /* 아주 나쁨 */
+.emotion_2 { background-color: var(--emotion-bad); } /* 나쁨 */
+.emotion_3 { background-color: var(--emotion-neutral); } /* 보통 */
+.emotion_4 { background-color: var(--emotion-smile); } /* 좋음 */
+.emotion_5 { background-color: var(--emotion-happy); } /* 아주 좋음 */
+
+/* 데이터 없는 날 */
+.no_diary { background-color: transparent !important; color: #333; }
+.no_diary:hover { background-color: #f0f0f0; }
 
 /* =========================
    Cards (Left month chart) - diary only

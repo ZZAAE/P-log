@@ -2,7 +2,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Calendar"%>
 <%@ page import="diary.DiaryDAO, diary.DiaryinfoDTO"%>
+<%@page import="diary.CalendarDAO"%>
 <%@ page import="image.ImageDAO"%>
+<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
 request.setCharacterEncoding("UTF-8");
 
@@ -10,14 +14,6 @@ String sessionUserId = (String)session.getAttribute("user_id");
 if(sessionUserId == null){
   response.sendRedirect("../user/login.jsp");
   return;
-}
-Vector<DiaryinfoDTO> Cbean = (Vector<DiaryinfoDTO>) request.getAttribute("Cbean");
-
-int[] monthCounts = (int[]) request.getAttribute("monthCounts");
-
-//혹시 데이터가 없을 경우를 대비해 기본값 설정
-if (monthCounts == null) {
- monthCounts = new int[]{0, 0, 0, 0, 0};
 }
 
 String date = request.getParameter("selectedDate");
@@ -65,6 +61,22 @@ Calendar today = Calendar.getInstance();
 int ty = today.get(Calendar.YEAR);
 int tm = today.get(Calendar.MONTH) + 1;
 int td = today.get(Calendar.DATE);
+
+//월간차트 
+DiaryDAO ddao = new DiaryDAO();
+CalendarDAO cdao = new CalendarDAO();
+int[] monthCounts = ddao.getMonthlyEmotionSummary(sessionUserId, year, month);
+Vector<DiaryinfoDTO> Cbean = cdao.select_Diary_inDate(sessionUserId);
+
+
+//혹시 데이터가 없을 경우를 대비해 기본값 설정
+if (monthCounts == null) {
+monthCounts = new int[]{0, 0, 0, 0, 0};
+}
+
+List<DiaryinfoDTO> otherUserBeans = ddao.getOtherUserDiaryInfoList(sessionUserId);
+pageContext.setAttribute("otherUserBeans", otherUserBeans);
+
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -72,10 +84,14 @@ int td = today.get(Calendar.DATE);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>일기 수정</title>
-
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/diary_n.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/diary.css">
 <link rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ✅ P-log 링크 스타일 유지 */
@@ -179,17 +195,38 @@ window.addEventListener("DOMContentLoaded", ()=>{
 </head>
 
 <body>
-  <!-- ✅ 상단바 -->
-  <div class="topbar">
-    <div class="topbar__inner">
-      <!-- ✅ P-log 클릭하면 캘린더 메인으로 -->
-      <a class="topbar__logo" href="<%=request.getContextPath()%>/diary/CalendarMain.do">P-log</a>
-
-      <a class="topbar__profile" href="#" aria-label="프로필">
-        <span class="topbar__profileIcon" aria-hidden="true"></span>
-      </a>
-    </div>
-  </div>
+  <!-- ✅ Topbar (calendar.css 기준 구조로 정리) -->
+   <div class="topbar">
+      <div class="topbar__inner">
+         <!-- 왼쪽 -->
+         <div class="topbar__logo">P-log</div>
+         <!-- 오른쪽 -->
+         <div class="topbar__right">
+            <!-- 집 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/CalendarMain.do"
+               aria-label="홈"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-house-door-fill"></i>
+            </span>
+            </a>
+            <!-- ✅ 갤러리 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/GalleryCon.do"
+               aria-label="갤러리"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-card-image"></i>
+            </span>
+            </a>
+            <!-- 사람 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/user/userinfo_update.jsp"
+               aria-label="프로필"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-person-fill"></i>
+            </span>
+            </a> <a class="topbar__logout"
+               href="${pageContext.request.contextPath}/user/LogoutCon.do">로그아웃</a>
+         </div>
+      </div>
+   </div>
 
   <div class="desktop-layout">
     <!-- 좌측 패널(공통) -->
@@ -315,7 +352,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
             %>
 
             <% if(hasOldImg){ %>
-              <img id="previewImg" class="photo" src="<%=showPath%>" data-old="1" style="display:block;">
+              <img id="previewImg" class="photo" src="<%=imagePathVal%>" data-old="1" style="display:block;">
             <% } else { %>
               <img id="previewImg" class="photo" style="display:none;">
             <% } %>
@@ -331,24 +368,44 @@ window.addEventListener("DOMContentLoaded", ()=>{
       </div>
     </main>
 
-    <!-- 우측 소식 -->
-    <aside class="desktop-side desktop-side--right">
-      <h2 class="panel-title">소식</h2>
-      <div class="news-list">
-        <article class="news-card">
-          <div class="news-avatar"></div>
-          <div class="news-body">
-            <div class="news-name">smile1225 님</div>
-            <div class="news-text">
-              <span class="news-message">혼자 산책 다녀왔다...</span>
-              <span class="news-emoji"><img src="<%=request.getContextPath()%>/resources/mood1.png"></span>
-            </div>
-          </div>
-        </article>
-      </div>
-    </aside>
-    
-<script>
+    <!-- 우측 패널: 메인과 동일(소식) -->
+      <aside class="desktop-side desktop-side--right">
+         <h2 class="panel-title">소식</h2>
+
+         <div class="news-list">
+            <c:forEach var="bean" items="${otherUserBeans}">
+				<c:if test="${bean.getEmotion() == 1}">
+					<c:set var="path" value="/image/화남.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 2}">
+					<c:set var="path" value="/image/안좋음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 3}">
+					<c:set var="path" value="/image/무표정.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 4}">
+					<c:set var="path" value="/image/웃음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 5}">
+					<c:set var="path" value="/image/빵긋.png"></c:set>
+				</c:if>
+				<article class="news-card">
+				<div class="news-avatar" aria-hidden="true"></div>
+				<div class="news-body">
+					<div class="news-name">${bean.getUser_id()} 님</div>
+					<div class="news-text">
+						<span class="news-message"> ${bean.getContent()}</span> <span class="news-emoji"> 
+							<img src="${pageContext.request.contextPath}${path}" alt="화남">
+						</span>
+					</div>
+				</div>
+				</article>
+			</c:forEach>
+         </div>
+      </aside>
+
+  </div>
+  <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 1. 데이터 준비
     const monthData = [
@@ -381,13 +438,13 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // 3. 이미지 객체 생성 및 로드
-    const moodSrcs = [
-        '<%=request.getContextPath()%>/image/화남.png',
-        '<%=request.getContextPath()%>/image/안좋음.png',
-        '<%=request.getContextPath()%>/image/무표정.png',
-        '<%=request.getContextPath()%>/image/웃음.png',
-        '<%=request.getContextPath()%>/image/빵긋.png'
-    ];
+     const moodSrcs = [
+    '<%=request.getContextPath()%>/resources/mood/mood1.png',
+    '<%=request.getContextPath()%>/resources/mood/mood2.png',
+    '<%=request.getContextPath()%>/resources/mood/mood3.png',
+    '<%=request.getContextPath()%>/resources/mood/mood4.png',
+    '<%=request.getContextPath()%>/resources/mood/mood5.png'
+  ];
     
     const moodImgs = moodSrcs.map(src => {
         const img = new Image();
@@ -447,7 +504,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-  </div>
 </body>
 </html>

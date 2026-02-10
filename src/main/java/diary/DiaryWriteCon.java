@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -107,6 +108,11 @@ public class DiaryWriteCon extends HttpServlet {
 				
 		System.out.println("DiaryWriteCon.do의 create_date: " + create_date);
 		request.setAttribute("create_date", create_date);
+		
+		//소식기능을 위한 타유저 일기정보 리스트 받음
+	    List<DiaryinfoDTO> otherUserBeans = dDao.getOtherUserDiaryInfoList(user_id);
+	    //DiaryWrite jsp에게 일기정보리스트 넘겨줌
+	    request.setAttribute("otherUserBeans", otherUserBeans);
 		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);
 	}

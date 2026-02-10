@@ -12,10 +12,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Calendar Main Page!</title>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calendar.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calendar.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
 
 </head>
 
@@ -97,23 +101,34 @@ if (yShort != null) {
 %>
 
 <!-- ✅ Topbar (calendar.css 기준 구조로 정리) -->
-<div class="topbar">
+   <div class="topbar">
       <div class="topbar__inner">
          <!-- 왼쪽 -->
          <div class="topbar__logo">P-log</div>
          <!-- 오른쪽 -->
          <div class="topbar__right">
             <!-- 집 아이콘 -->
-            <a class="topbar__profile" href="#" aria-label="홈"> <span
-               class="topbar__profileIcon"> <i class="bi bi-house-door-fill"></i>
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/CalendarMain.do"
+               aria-label="홈"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-house-door-fill"></i>
+            </span>
+            </a>
+            <!-- ✅ 갤러리 아이콘 -->
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/diary/GalleryCon.do"
+               aria-label="갤러리"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-card-image"></i>
             </span>
             </a>
             <!-- 사람 아이콘 -->
-            <a class="topbar__profile" href="#" aria-label="프로필"> <span
-               class="topbar__profileIcon"> <i class="bi bi-person-fill"></i>
+            <a class="topbar__profile"
+               href="${pageContext.request.contextPath}/user/userinfo_update.jsp"
+               aria-label="프로필"> <span class="topbar__profileIcon"> <i
+                  class="bi bi-person-fill"></i>
             </span>
-            </a>
-            <a class="topbar__logout" href="${pageContext.request.contextPath}/user/LogoutCon.do">로그아웃</a>
+            </a> <a class="topbar__logout"
+               href="${pageContext.request.contextPath}/user/LogoutCon.do">로그아웃</a>
          </div>
       </div>
    </div>
@@ -130,7 +145,7 @@ if (yShort != null) {
         <canvas id="weekChart"></canvas>
       </div>
       <p class="panel-score">
-        기분 점수: <%= (request.getAttribute("weekScore")==null?0:request.getAttribute("weekScore")) %>/30점
+        기분 점수: <%= (request.getAttribute("weekScore")==null?0:request.getAttribute("weekScore")) %>/35점
       </p>
     </div>
 
@@ -256,23 +271,38 @@ if (yShort != null) {
 
   <aside class="desktop-side desktop-side--right">
     <h2 class="panel-title">소식</h2>
-    <div class="news-list">
-      <article class="news-card">
-        <div class="news-avatar" aria-hidden="true"></div>
-        <div class="news-body">
-          <div class="news-name">smile1225 님</div>
-          <div class="news-text">
-            <span class="news-message">
-              혼자 산책 다녀왔다... 요즘 날씨가 춥네 내일은 해피 공원에 가야겠다. 요즘 혼자 산책을 즐기는 중...
-            </span>
-            <span class="news-emoji">
-              <img src="${pageContext.request.contextPath}/image/화남.png" alt="화남">
-            </span>
-          </div>
-        </div>
-      </article>
+		<div class="news-list">
+			<c:forEach var="bean" items="${otherUserBeans}">
+				<c:if test="${bean.getEmotion() == 1}">
+					<c:set var="path" value="/image/화남.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 2}">
+					<c:set var="path" value="/image/안좋음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 3}">
+					<c:set var="path" value="/image/무표정.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 4}">
+					<c:set var="path" value="/image/웃음.png"></c:set>
+				</c:if>
+				<c:if test="${bean.getEmotion() == 5}">
+					<c:set var="path" value="/image/빵긋.png"></c:set>
+				</c:if>
+				<article class="news-card">
+				<div class="news-avatar" aria-hidden="true"></div>
+				<div class="news-body">
+					<div class="news-name">${bean.getUser_id()} 님</div>
+					<div class="news-text">
+						<span class="news-message"> ${bean.getContent()}</span> <span class="news-emoji"> 
+							<img src="${pageContext.request.contextPath}${path}" alt="화남">
+						</span>
+					</div>
+				</div>
+				</article>
+			</c:forEach>
 
-      <article class="news-card">
+
+			<%-- <article class="news-card">
         <div class="news-avatar" aria-hidden="true"></div>
         <div class="news-body">
           <div class="news-name">smile1225 님</div>
@@ -315,9 +345,9 @@ if (yShort != null) {
             </span>
           </div>
         </div>
-      </article>
-    </div>
-  </aside>
+      </article> --%>
+		</div>
+		</aside>
 
 </div>
 
@@ -375,17 +405,15 @@ document.addEventListener('DOMContentLoaded', function () {
       datasets: [{
         label: 'Emotion (1~5)',
         data: weekEmotions,
-        tension: 0.35,
+        tension: 0,
 
-        borderColor: '#A0D8FF',
+        borderColor: '#FF0000',
         backgroundColor: 'rgba(160, 216, 255, 0.25)',
-        fill: true,
+        fill: false,
 
-        pointBackgroundColor: '#A0D8FF',
-        pointBorderColor: '#FFFFFF',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 6
+        pointBackgroundColor: '#FF0000',
+        pointBorderColor: '#FF0000',
+        
       }]
     },
     options: {
@@ -394,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
       plugins: { legend: { display: false } },
       scales: {
         x: { grid: { display: false } },
-        y: { min: 1, max: 5, ticks: { stepSize: 1 }, grid: { display: false } }
+        y: { min: 0, max: 5, ticks: { stepSize: 1 }, grid: { display: false } }
       }
     }
   });

@@ -1,6 +1,7 @@
 package diary;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
@@ -51,7 +52,10 @@ public class Preview extends HttpServlet {
 			}
 		    System.out.println("Preview.java의 selectedDate: " + selectedDate);
 		    CalendarDAO cdao = new CalendarDAO();
-		    DiaryinfoDTO preview = cdao.select_Diary_Preview(user_id, selectedDate);
+		    DiaryDAO dDao = new DiaryDAO();
+		    int diaryID = dDao.getDiaryID(user_id, selectedDate);
+		    //DiaryinfoDTO preview = cdao.select_Diary_Preview(user_id, selectedDate);
+		    DiaryinfoDTO preview = dDao.getDiaryInfo(diaryID);
 		    ImageDAO idao = new ImageDAO();
 		    Vector<DiaryinfoDTO> bean = cdao.select_Diary_inDate(user_id);
 		    
@@ -66,7 +70,12 @@ public class Preview extends HttpServlet {
 		    request.setAttribute("selectedDate", selectedDate);
 		    request.setAttribute("bean", bean);
 		    
-		    if(preview == null) {
+		    //소식기능을 위한 타유저 일기정보 리스트 받음
+		    List<DiaryinfoDTO> otherUserBeans = ddao.getOtherUserDiaryInfoList(user_id);
+		    //DiaryWrite jsp에게 일기정보리스트 넘겨줌
+		    request.setAttribute("otherUserBeans", otherUserBeans);
+		    
+		    if(diaryID == -1) {
 		    	RequestDispatcher dis = request.getRequestDispatcher("/diary/diarywrite.jsp");
 				dis.forward(request, response);
 		    	

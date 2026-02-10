@@ -214,4 +214,36 @@ public class DiaryDAO {
 		
 	}
 	
+	// 매겨변수로 받은 유저를 제외한 다른 유저들의 일기정보들을 모두 받아옴
+	public List<DiaryinfoDTO> getOtherUserDiaryInfoList(String user_id){
+		List<DiaryinfoDTO> list = new ArrayList<DiaryinfoDTO>();
+		
+		try {
+			connect();
+			//String query = "select * from diaryinfo where user_id not in ?";
+			String query = "select * from diaryinfo WHERE user_id <> ? "
+					+ "AND create_date >= TRUNC(SYSDATE) "
+					+ "AND create_date < TRUNC(SYSDATE) + 1 ORDER BY create_date DESC, diary_id DESC";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, user_id);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				DiaryinfoDTO ddto = new DiaryinfoDTO();
+				ddto.setDiary_id(Integer.parseInt(rs.getString(1)));
+				ddto.setUser_id(rs.getString(2));
+				ddto.setAdvise_id(Integer.parseInt(rs.getString(3)));
+				ddto.setEmotion(Integer.parseInt(rs.getString(4)));
+				ddto.setContent(rs.getString(5));
+				ddto.setImage_id(rs.getString(6));
+				ddto.setCreate_date(rs.getDate(7).toString());
+				
+				list.add(ddto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 }
