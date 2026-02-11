@@ -3,10 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page import="java.util.Calendar"%>
+<%@page import="diary.DiaryinfoDTO" %>
+<%@ page import="java.util.List" %>
+<%@page import="java.util.Vector"%>
 <%
 request.setCharacterEncoding("UTF-8");
 String userId = (String)session.getAttribute("user_id");
 if(userId == null){response.sendRedirect("../user/login.jsp");return;}
+Vector<DiaryinfoDTO> bean = (Vector<DiaryinfoDTO>) request.getAttribute("bean");
 
 String date = request.getParameter("selectedDate");
 if(date == null || date.trim().isEmpty()){
@@ -178,10 +182,33 @@ if (monthCounts == null) {
           int dayCount = weekMon - 1;
           for(int d=1; d<=lastDay; d++){
             String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
-          %>
-               <a class="d no_diary<%=todayClass%>"
-                  href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%=year%>-<%=String.format("%02d",month)%>-<%=String.format("%02d",d)%>"><%=d%></a>
-               <%
+            String Fmonth = month < 10 ? "0"+month : String.valueOf(month);
+            String Fday = d < 10 ? "0"+d : String.valueOf(d);
+            String Cdate = year + "-" + Fmonth + "-" + Fday;
+            
+            DiaryinfoDTO foundDto = null;
+            if(bean != null){
+              for(DiaryinfoDTO dto : bean){
+                if(dto.getCreate_date().equals(Cdate)){
+                  foundDto = dto; break;
+                }
+              }
+            }
+            if(foundDto != null){
+            %>
+                <a class="d emotion_<%=foundDto.getEmotion()%><%=todayClass%>"
+                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                   <%=d%>
+                </a>
+            <%
+            } else {
+            %>
+                <a class="d no_diary<%=todayClass%>"
+                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                   <%=d%>
+                </a>
+            <%
+            }
             dayCount++;
           }
 
