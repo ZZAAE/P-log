@@ -41,12 +41,12 @@
       <a href="<%=request.getContextPath()%>/user/create_id.jsp">회원가입</a>
     </div>
 
-    <div class="oauth">
+    <!-- <div class="oauth">
       <button class="btn-google" type="button">
         <span class="google-icon"></span>
         <span>Sign in with Google</span>
       </button>
-    </div>
+    </div> -->
 	
   </section>
 </div>
