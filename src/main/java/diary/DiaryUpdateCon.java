@@ -73,14 +73,15 @@ public class DiaryUpdateCon extends HttpServlet {
 			realPath = request.getServletContext().getRealPath("/resources/img/");
 		}
 		
-		
+		//setAttribute에는 오브젝트만 넣을수 있기 때문에 bool타입은 못넣음. 그래서 String으로
+		String isImageDelete = (String)request.getParameter("isImageDelete");
+		System.out.println("isImageDelete: " + isImageDelete);
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
 		
 	
 		if(!imgFile.getSubmittedFileName().isEmpty())  {
-		//if(imgFile != null)  {
 			try {
 				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
 				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
@@ -125,6 +126,18 @@ public class DiaryUpdateCon extends HttpServlet {
 				return;
 			}
 		}
+		else if(isImageDelete.equals("true")) {
+			Path oldFilePath = Paths.get(prevImage_path);
+			try {
+				Files.delete(oldFilePath);					
+			}
+			catch(NoSuchFileException e){
+				System.out.println("삭제하려는 파일이 존재하지 않음");
+			}
+			catch (IOException e) {            
+				e.printStackTrace();
+			}
+		}
 		
 		bean.setDiary_id(diary_id);
 		bean.setUser_id(user_id);
@@ -133,13 +146,15 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setContent(content);
 		if(!imgFile.getSubmittedFileName().isEmpty()) {
 			bean.setImage_id(fileName);
+		}else if(isImageDelete.equals("true")){
+			bean.setImage_id(null);
 		}else {
 			bean.setImage_id(prevImage_id);
 		}
 			
 				
 		dDao.updateDiaryInfo(bean);
-		if(!imgFile.getSubmittedFileName().isEmpty())
+		if(!imgFile.getSubmittedFileName().isEmpty() || isImageDelete.equals("true"))
 			iDao.deleteImageinfo(prevImage_id);
 		
 		request.setAttribute("user_id", user_id);

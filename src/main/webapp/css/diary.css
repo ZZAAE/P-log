@@ -4,7 +4,7 @@
 
 /* diary는 레이아웃 패딩/센터 위치가 calendar와 달라서 override */
 .desktop-layout{
-  padding: 50px 125px 0;   /* diary 원래 값 유지 */
+  padding: 85px 125px 0;   /* diary 원래 값 유지 */
 }
 
 .desktop-center{
@@ -57,7 +57,7 @@
   grid-template-columns: repeat(7, 44px);
   gap:0;
   padding-left:6px;
-  margin-bottom: 68px;
+  margin-bottom: 109px;
 }
 .left-cal__grid .d{
   width:44px; height:44px;
@@ -73,7 +73,7 @@
 .left-cal__grid .inactive{ color:#d0d0d0; background:transparent; }
 .left-cal__grid a.no_diary{ background:#e0e0e0; }
 .left-cal__grid a.today{
-  outline:2px solid rgba(0,0,0,0.12);
+  outline: 2px solid rgb(255 64 64 / 90%);
   outline-offset:-2px;
 }
 
@@ -104,10 +104,13 @@
 ========================= */
 .phone{
   width:390px;
-  height:844px;
+  height:730px;
   background:transparent;
   overflow:hidden;
   position:relative;
+  
+  display: flex;
+  flex-direction: column;
 }
 
 /* 작성 상단바 */
@@ -217,6 +220,7 @@
 
 /* Photo */
 .photo-area{
+  position: relative;
   margin-top: 30px;
   padding: 0 12px;
 }
@@ -228,6 +232,13 @@
   display:block;
   background:#f2f2f2;
   margin:0 auto;
+}
+
+.delete-btn {
+    position: absolute;    
+    top: 10px;             
+    right: 30px;            
+    z-index: 10;           /
 }
 
 /* Content */
