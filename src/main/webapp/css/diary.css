@@ -1,0 +1,305 @@
+/* =========================================================
+   diary_n.css (only diary-specific after common.css split)
+========================================================= */
+
+/* diary는 레이아웃 패딩/센터 위치가 calendar와 달라서 override */
+.desktop-layout{
+  padding: 50px 125px 0;   /* diary 원래 값 유지 */
+}
+
+.desktop-center{
+  align-self:flex-start;
+  margin-top:-25px;        /* 작성란 위로 */
+}
+
+/* =========================
+   Left Calendar (공통)
+========================= */
+.left-cal {
+    width: 360px;
+    padding-top: 6px;
+    margin-left: 17px;
+}
+
+.left-cal__nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-left: 6px;
+    margin-bottom: 30px;
+    margin-left: 70px;
+}
+
+.left-cal__btn{
+  text-decoration:none;
+  color:#111;
+  font-size:28px;
+  line-height:1;
+}
+.left-cal__title{
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+.left-cal__dow{
+  display:grid;
+  grid-template-columns: repeat(7, 44px);
+  gap:0;
+  padding-left:6px;
+  margin-bottom:12px;
+  color:#333;
+  font-weight:500;
+  font-size:14px;
+}
+.left-cal__dow > div{ width:44px; text-align:center; }
+.left-cal__grid{
+  display:grid;
+  grid-template-columns: repeat(7, 44px);
+  gap:0;
+  padding-left:6px;
+  margin-bottom: 68px;
+}
+.left-cal__grid .d{
+  width:44px; height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  text-decoration:none;
+  color:#111;
+  font-size:16px;
+  user-select:none;
+}
+.left-cal__grid .inactive{ color:#d0d0d0; background:transparent; }
+.left-cal__grid a.no_diary{ background:#e0e0e0; }
+.left-cal__grid a.today{
+  outline:2px solid rgba(0,0,0,0.12);
+  outline-offset:-2px;
+}
+
+/* 감정 수치에 따른 배경색 (파스텔톤) */
+.emotion_1 { background-color: var(--emotion-angry); } /* 아주 나쁨 */
+.emotion_2 { background-color: var(--emotion-bad); } /* 나쁨 */
+.emotion_3 { background-color: var(--emotion-neutral); } /* 보통 */
+.emotion_4 { background-color: var(--emotion-smile); } /* 좋음 */
+.emotion_5 { background-color: var(--emotion-happy); } /* 아주 좋음 */
+
+/* 데이터 없는 날 */
+.no_diary { background-color: transparent !important; color: #333; }
+.no_diary:hover { background-color: #f0f0f0; }
+
+/* =========================
+   Cards (Left month chart) - diary only
+========================= */
+.panel-card{
+  margin-top: 34px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 18px;
+}
+
+/* =========================
+   Center Write (390 x 844)
+========================= */
+.phone{
+  width:390px;
+  height:844px;
+  background:transparent;
+  overflow:hidden;
+  position:relative;
+}
+
+/* 작성 상단바 */
+.write-top{
+  height:70px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  position:relative;
+  padding: 28px 14px 0;
+}
+
+.icon-btn{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:#111;
+  display:grid;
+  place-items:center;
+}
+
+.icon-btn.back{
+  width:40px;
+  height:40px;
+  font-size:20px;
+}
+
+/* right actions (+, ✓) */
+.actions{
+  margin-left:auto;
+  display:flex;
+  gap:8px;
+  padding-top:6px;
+}
+
+.icon-btn.circle{
+  width:30px;
+  height:30px;
+  border:1px solid #3F3F3F;
+  border-radius:50%;
+  background:#fff;
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:95%;
+}
+
+.actions .icon-btn.circle:last-child{
+  margin-right:10px;
+}
+
+.date-wrap{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top: 35px;
+  text-align:center;
+}
+
+.date-text{
+  font-size:17px;
+  font-weight:600;
+  color:#444;
+}
+
+.date-line{
+  width:140px;
+  height:2px;
+  background:#ff6b6b;
+  border-radius:2px;
+  margin:6px auto 0;
+  opacity:.7;
+}
+
+/* Emoji Row */
+.emoji-row{
+  margin-top: 50px;
+  margin-bottom: 35px;
+  display:flex;
+  justify-content:space-between;
+  padding: 0 70px;
+}
+
+.emoji-btn{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  -webkit-tap-highlight-color: transparent;
+}
+.emoji-btn img{
+  width:30px;
+  height:30px;
+  object-fit:contain;
+}
+
+/* Photo */
+.photo-area{
+  margin-top: 30px;
+  padding: 0 12px;
+}
+.photo{
+  width:95%;
+  height:220px;
+  border-radius:10px;
+  object-fit:cover;
+  display:block;
+  background:#f2f2f2;
+  margin:0 auto;
+}
+
+/* Content */
+.content-area{
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.content-box1{
+  width:100%;
+  height:460px;
+  background:#efefef;
+  border-radius:7px;
+}
+
+.content-box{
+  width:100%;
+  height:470px;
+  background:#efefef;
+  border-radius:7px;
+}
+
+.phone.no-photo .content-box{
+  height:500px;
+}
+
+.diary-input{
+  width:100%;
+  height:100%;
+  border:none;
+  outline:none;
+  resize:none;
+  background:transparent;
+  padding:16px;
+  font-size:14px;
+  line-height:1.6;
+  color:#111;
+  font-family: inherit;
+  font-weight: 400;
+}
+
+
+
+/* Emoji Select (CSS ONLY) */
+.emoji-pick .emoji-btn img{
+  transition: filter .25s ease, opacity .25s ease, transform .15s ease;
+}
+
+.emoji-pick #emo1:checked + label img,
+.emoji-pick #emo2:checked + label img,
+.emoji-pick #emo3:checked + label img,
+.emoji-pick #emo4:checked + label img,
+.emoji-pick #emo5:checked + label img{
+  filter:none;
+  opacity:1;
+  transform: scale(1.15);
+}
+
+.emoji-pick:has(#emo1:checked) label:not([for="emo1"]) img,
+.emoji-pick:has(#emo2:checked) label:not([for="emo2"]) img,
+.emoji-pick:has(#emo3:checked) label:not([for="emo3"]) img,
+.emoji-pick:has(#emo4:checked) label:not([for="emo4"]) img,
+.emoji-pick:has(#emo5:checked) label:not([for="emo5"]) img{
+  filter: blur(3px);
+  opacity: .35;
+}
+
+.emoji-pick:has(.emo:checked) label{ pointer-events:none; }
+.emoji-pick #emo1:checked + label,
+.emoji-pick #emo2:checked + label,
+.emoji-pick #emo3:checked + label,
+.emoji-pick #emo4:checked + label,
+.emoji-pick #emo5:checked + label{
+  pointer-events:auto;
+}

@@ -34,7 +34,8 @@ public class DiaryDAO {
 	public void insertDiaryInfo(DiaryinfoDTO dDto) {
 		try {
 			connect();
-			String query = "insert into diaryinfo values(diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
+			String query = "insert into diaryinfo (DIARY_ID, USER_ID, ADVISE_ID, EMOTION, CONTENT, IMAGE_ID, CREATE_DATE) "
+                    + "values (diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, dDto.getUser_id());
 			pstmt.setInt(2, dDto.getAdvise_id());
@@ -43,8 +44,9 @@ public class DiaryDAO {
 			pstmt.setString(5, dDto.getImage_id());
 			Date date = Date.valueOf(dDto.getCreate_date());
 			pstmt.setDate(6, date);
-			pstmt.executeUpdate(query);
+			int result = pstmt.executeUpdate();
 			con.close();
+			System.out.println("insert 수행 결과: " + result);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,6 +61,7 @@ public class DiaryDAO {
 			connect();
 			String query = "select * from diaryinfo where diary_id=?";
 			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				ddto.setDiary_id(Integer.parseInt(rs.getString(1)));
@@ -176,12 +179,14 @@ public class DiaryDAO {
 		int id = -1;
 		try {
 				connect();
-				String query = "select diary_id from diaryinfo where user_id=? AND create_date=?";
+				
+				String query = "select diary_id from diaryinfo where user_id=? and create_date = ?";
+				System.out.println(query);
 				pstmt = con.prepareStatement(query);
 				pstmt.setString(1, userID);
 				pstmt.setDate(2, Date.valueOf(date));
-				pstmt.executeQuery();
-				con.close();
+				rs = pstmt.executeQuery();
+
 				if(rs.next()) {
 					id = rs.getInt(1);
 				}
@@ -190,6 +195,55 @@ public class DiaryDAO {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	// 월간차트 계산기
+	public int[] getMonthlyEmotionSummary(String user_id, int year, int month) {
+		CalendarDAO cdao = new CalendarDAO();
+		// 1) 날짜 계산 로직
+		java.util.Calendar mc = java.util.Calendar.getInstance();
+		mc.set(year, month - 1, 1);
+		int lastDay = mc.getActualMaximum(java.util.Calendar.DATE);
+
+		String start = String.format("%04d-%02d-01", year, month);
+		String end = String.format("%04d-%02d-%02d", year, month, lastDay);
+
+		// 2) DB 조회 로직
+		return  cdao.selectMonthEmotionCounts(user_id, start, end);
+		
+		
+	}
+	
+	// 매겨변수로 받은 유저를 제외한 다른 유저들의 일기정보들을 모두 받아옴
+	public List<DiaryinfoDTO> getOtherUserDiaryInfoList(String user_id){
+		List<DiaryinfoDTO> list = new ArrayList<DiaryinfoDTO>();
+		
+		try {
+			connect();
+			//String query = "select * from diaryinfo where user_id not in ?";
+			String query = "select * from diaryinfo WHERE user_id <> ? "
+					+ "AND create_date >= TRUNC(SYSDATE) "
+					+ "AND create_date < TRUNC(SYSDATE) + 1 ORDER BY create_date DESC, diary_id DESC";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, user_id);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				DiaryinfoDTO ddto = new DiaryinfoDTO();
+				ddto.setDiary_id(Integer.parseInt(rs.getString(1)));
+				ddto.setUser_id(rs.getString(2));
+				ddto.setAdvise_id(Integer.parseInt(rs.getString(3)));
+				ddto.setEmotion(Integer.parseInt(rs.getString(4)));
+				ddto.setContent(rs.getString(5));
+				ddto.setImage_id(rs.getString(6));
+				ddto.setCreate_date(rs.getDate(7).toString());
+				
+				list.add(ddto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 	
 }

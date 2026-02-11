@@ -1,42 +1,52 @@
 <%@page import="java.util.Vector"%>
-<%@page import="advise.AdviseinfoDAO"%>
-<%@ page import="image.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="diary.DiaryDAO, diary.DiaryinfoDTO"%>
+<%@page import="diary.CalendarDAO"%>
+<%@ page import="image.ImageDAO"%>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@page import="java.util.Calendar"%>
-<%@ page import="diary.DiaryinfoDTO" %>
-<%@ page import="java.util.List" %>
 <%
 request.setCharacterEncoding("UTF-8");
 
-String userId = (String)session.getAttribute("user_id");
-if(userId == null){ response.sendRedirect("../user/login.jsp"); return; }
-Vector<DiaryinfoDTO> bean = (Vector<DiaryinfoDTO>) request.getAttribute("bean");
-int[] monthCounts = (int[]) request.getAttribute("monthCounts");
-
-// 혹시 데이터가 없을 경우를 대비해 기본값 설정
-if (monthCounts == null) {
-    monthCounts = new int[]{0, 0, 0, 0, 0};
+String sessionUserId = (String)session.getAttribute("user_id");
+if(sessionUserId == null){
+  response.sendRedirect("../user/login.jsp");
+  return;
 }
 
-// 조회 날짜
-//String date = request.getParameter("selectedDate");
-String date = (String)request.getAttribute("selectedDate");
+String date = request.getParameter("selectedDate");
 if(date == null || date.trim().isEmpty()){
   date = java.time.LocalDate.now().toString();
 }
 
-//Preview.do에서 전달된 값
-DiaryinfoDTO preview = (DiaryinfoDTO)request.getAttribute("preview");
-if(date == null || date.trim().isEmpty()){
-date = java.time.LocalDate.now().toString();
+// ✅ 기존 데이터 불러오기
+String contentVal = "";
+int emotionVal = 0;
+String imagePathVal = "";
+
+try{
+  DiaryDAO dDao = new DiaryDAO();
+  int diaryId = dDao.getDiaryID(sessionUserId, date);
+  DiaryinfoDTO dto = (diaryId > 0) ? dDao.getDiaryInfo(diaryId) : null;
+
+  if(dto != null){
+    if(dto.getContent() != null) contentVal = dto.getContent();
+    if(dto.getEmotion() > 0) emotionVal = dto.getEmotion();
+
+    String imageId = dto.getImage_id();
+    if(imageId != null && !imageId.trim().isEmpty()){
+      ImageDAO iDao = new ImageDAO();
+      String p = iDao.getImageinfoPath(imageId); // "/resources/img/xxx" 형태 권장
+      if(p != null) imagePathVal = p;
+    }
+  }
+}catch(Exception e){
+  // 화면 유지
 }
 
-String imagePath = (String)request.getAttribute("imagePath");
-System.out.println("Preview.jsp imagePath: " + imagePath);
-
-// left calendar month/year = date 기준
+// ✅ left calendar month/year = date 기준
 int year = Integer.parseInt(date.substring(0,4));
 int month = Integer.parseInt(date.substring(5,7));
 
@@ -52,76 +62,136 @@ int ty = today.get(Calendar.YEAR);
 int tm = today.get(Calendar.MONTH) + 1;
 int td = today.get(Calendar.DATE);
 
-/*
-  ===== 실제 데이터 바인딩 자리 =====
-*/
-AdviseinfoDAO aDao = new AdviseinfoDAO();
-//String advice = (String)request.getAttribute("advice");
-System.out.println("preview.getAdvise_id(): " + preview.getAdvise_id());
-String advice = aDao.getAdviseininfo(preview.getAdvise_id());
-System.out.println("advice: " + advice);
-if(advice == null) advice = "내일은 더 좋은 하루를 보내길 바라요.";
+//월간차트 
+DiaryDAO ddao = new DiaryDAO();
+CalendarDAO cdao = new CalendarDAO();
+int[] monthCounts = ddao.getMonthlyEmotionSummary(sessionUserId, year, month);
+Vector<DiaryinfoDTO> Cbean = cdao.select_Diary_inDate(sessionUserId);
 
-//String content = (String)request.getAttribute("content");
-String content = preview.getContent();
-if(content == null) content = "오늘은 수민이를 만나서 떡볶이를 먹었다. 처음 가보는 떡볶이 집이었는데 만족! 다음은 그 옆에 있는 토마토라면 집에 가보기로 했다. 기대돼!! 벌써 배고픈 느낌...";
 
-String imageUrl = (String)request.getAttribute("imagePath");
-if(imageUrl == null) imageUrl = request.getContextPath() + "/images/sample_dog.jpg";
+//혹시 데이터가 없을 경우를 대비해 기본값 설정
+if (monthCounts == null) {
+monthCounts = new int[]{0, 0, 0, 0, 0};
+}
 
-//Integer emotion = (Integer)request.getAttribute("emotion"); // 1~5
-Integer emotion = preview.getEmotion();
-if(emotion == null) emotion = 4;
+List<DiaryinfoDTO> otherUserBeans = ddao.getOtherUserDiaryInfoList(sessionUserId);
+pageContext.setAttribute("otherUserBeans", otherUserBeans);
+
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>일기 조회</title>
-
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/preview_n.css">
+<title>일기 수정</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/common.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/diary.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ✅ P-log 링크 스타일 유지 */
+.topbar__logo{
+  color:#fff;
+  font-weight:700;
+  text-decoration:none;
+}
 
+/* ✅ 이모티콘 클릭/불투명 */
+.emoji-pick{ display:flex; justify-content:center; gap:18px; }
+.emoji-btn{ cursor:pointer; opacity:1; transition:.2s; user-select:none; }
+.emoji-btn img{ width:32px; height:32px; display:block; pointer-events:none; }
+.emoji-btn.dim{ opacity:.25; }
+.emoji-btn.active{ opacity:1; transform:scale(1.10); }
+</style>
 
 <script>
-  function openDeleteModal(){
-    const overlay = document.getElementById("deleteOverlay");
-    overlay.classList.add("is-open");
-    overlay.setAttribute("aria-hidden", "false");
+function openImage(){
+  showImageUI(true);
+  document.getElementById("file").click();
+}
+
+function showImageUI(on){
+  const imgBox = document.querySelector(".imgBox");
+  const textarea = document.querySelector("textarea[name='content']");
+  if(on){
+    imgBox.classList.add("show");
+    textarea.classList.add("hasImage");
+  }else{
+    imgBox.classList.remove("show");
+    textarea.classList.remove("hasImage");
+  }
+}
+
+function submitUpdate(){
+  const txt = document.querySelector("textarea[name='content']").value.trim();
+  const emo = document.getElementById("emotion").value;
+
+  if(!txt){ alert("내용을 입력하세요."); return; }
+  if(!emo){ alert("기분(이모티콘)을 선택하세요."); return; }
+
+  document.getElementById("updateForm").submit();
+}
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  // ✅ 이미지 미리보기
+  const fileInput = document.getElementById("file");
+  const previewImg = document.getElementById("previewImg");
+
+  const hasOld = previewImg && previewImg.getAttribute("data-old") === "1";
+  if(hasOld){
+    showImageUI(true);
+    previewImg.style.display = "block";
+  }else{
+    showImageUI(false);
   }
 
-  function closeDeleteModal(){
-    const overlay = document.getElementById("deleteOverlay");
-    overlay.classList.remove("is-open");
-    overlay.setAttribute("aria-hidden", "true");
+  fileInput.addEventListener("change",(e)=>{
+    const f = e.target.files && e.target.files[0];
+    if(!f){
+      return; // 선택 취소 → 기존 유지
+    }
+    previewImg.src = URL.createObjectURL(f);
+    previewImg.style.display = "block";
+    showImageUI(true);
+  });
+
+  // ✅ 이모티콘 단일 선택 + 토글(선택된 거 다시 누르면 전체 선명)
+  const emotionInput = document.getElementById("emotion");
+  const buttons = Array.from(document.querySelectorAll(".emoji-btn"));
+  let selected = emotionInput.value ? emotionInput.value : null;
+
+  function render(){
+    if(!selected){
+      buttons.forEach(b => b.classList.remove("dim","active"));
+      emotionInput.value = "";
+      return;
+    }
+    buttons.forEach(b => { b.classList.add("dim"); b.classList.remove("active"); });
+    const active = document.querySelector('.emoji-btn[data-val="'+selected+'"]');
+    if(active){
+      active.classList.remove("dim");
+      active.classList.add("active");
+    }
+    emotionInput.value = selected;
   }
 
-  function confirmDelete(){
-    const url = document.getElementById("deleteConfirmYes").getAttribute("data-delete-url");
-    window.location.href = url;
-  }
-
-  window.addEventListener("DOMContentLoaded", function(){
-    const overlay = document.getElementById("deleteOverlay");
-
-    // overlay 바깥 클릭 시 닫기
-    overlay.addEventListener("click", function(e){
-      if(e.target === overlay) closeDeleteModal();
-    });
-
-    // ESC 닫기
-    document.addEventListener("keydown", function(e){
-      if(e.key === "Escape") closeDeleteModal();
+  buttons.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const val = btn.dataset.val;
+      if(selected === val) selected = null;
+      else selected = val;
+      render();
     });
   });
+
+  render();
+});
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -197,8 +267,8 @@ if(emotion == null) emotion = 4;
             String Cdate = year + "-" + Fmonth + "-" + Fday;
             
             DiaryinfoDTO foundDto = null;
-            if(bean != null){
-              for(DiaryinfoDTO dto : bean){
+            if(Cbean != null){
+              for(DiaryinfoDTO dto : Cbean){
                 if(dto.getCreate_date().equals(Cdate)){
                   foundDto = dto; break;
                 }
@@ -236,73 +306,85 @@ if(emotion == null) emotion = 4;
       <div class="panel-card panel-card--month">
         <p class="panel-cardTitle"><%=month %>월 달 기분 리포트</p>
         <div class="chart-container">
-    		<canvas id="monthChart"></canvas>
-		</div>
+          <canvas id="monthChart"></canvas>
+      </div>
       </div>
     </aside>
 
-    <!-- 중앙: 조회 UI (390 고정) -->
+    <!-- 중앙 수정 -->
     <main class="desktop-center">
       <div class="phone">
-        <!-- 상단: 날짜 + 연필(수정) -->
-        <header class="view-top">
-        <button type="button" class="icon-btn back" onclick="location.href='CalendarMain.do'">‹</button>
+
+        <header class="write-top">
+
           <div class="date-wrap">
             <div class="date-text"><%=date%></div>
             <div class="date-line"></div>
           </div>
-			
-          <a class="icon-btn pencil"          	
-             href="<%=request.getContextPath()%>/diary/diaryupdate.jsp?selectedDate=<%=date%>"
-             aria-label="수정"></a>
+
+          <div class="actions">
+                  <button type="button" class="icon-btn circle"
+                     onclick="openImage()">
+                     <i class="bi bi-plus"></i>
+                  </button>
+                  <button type="button" class="icon-btn circle"
+                     onclick="submitWrite()">
+                     <i class="bi bi-check2"></i>
+                  </button>
+               </div>
         </header>
 
-		<!-- 감정(1개) + 조언 -->
-        <section class="view-emotion">
-          <div class="emotion-one">
-            <img src="<%=request.getContextPath()%>/resources/mood/mood<%=emotion%>.png" alt="emotion">
-          </div>
-          <%
-          DiaryinfoDTO foundDto = null;
-          if(bean != null){
-            for(DiaryinfoDTO dto : bean){
-              if(dto.getCreate_date().equals(date)){
-                foundDto = dto; break;
+        <form id="updateForm"
+              action="<%=request.getContextPath()%>/diary/DiaryUpdateCon.do?selectedDate=<%=date %>"
+              method="post"
+              enctype="multipart/form-data">
+
+          <input type="hidden" name="create_date" value="<%=date%>">
+          <input type="hidden" name="emotion" id="emotion" value="<%=emotionVal%>">
+
+          <section class="emoji-row emoji-pick" style="margin-bottom: 50px">
+            <div class="emoji-btn" data-val="1"><img src="<%=request.getContextPath()%>/resources/mood/mood1.png"></div>
+            <div class="emoji-btn" data-val="2"><img src="<%=request.getContextPath()%>/resources/mood/mood2.png"></div>
+            <div class="emoji-btn" data-val="3"><img src="<%=request.getContextPath()%>/resources/mood/mood3.png"></div>
+            <div class="emoji-btn" data-val="4"><img src="<%=request.getContextPath()%>/resources/mood/mood4.png"></div>
+            <div class="emoji-btn" data-val="5"><img src="<%=request.getContextPath()%>/resources/mood/mood5.png"></div>
+          </section>
+
+          <input type="file" name="file" id="file" accept="image/*" style="display:none;">
+
+          <div class="photo-area imgBox">
+            <%
+              boolean hasOldImg = (imagePathVal != null && !imagePathVal.trim().isEmpty());
+              String showPath = imagePathVal;
+              if(hasOldImg){
+                if(showPath.startsWith("/")) showPath = request.getContextPath() + showPath;
+                else if(!showPath.startsWith("http")) showPath = request.getContextPath() + "/" + showPath;
               }
-            }
-          }
-          if(foundDto != null){   %>
-                <div class="advice-pill emotion_<%=foundDto.getEmotion()%>"><%=advice%></div>
+            %>
+
+            <% if(hasOldImg){ %>
+              <img id="previewImg" class="photo" src="<%=imagePathVal%>" data-old="1" style="display:block;">
+            <% } else { %>
+              <img id="previewImg" class="photo" style="display:none;">
             <% } %>
-          
-        </section>
-
-        <!-- 이미지 -->
-        <section class="view-photo">
-	        <c:if test="${!imagePath.isEmpty()}">
-	        	<img src="<%=imageUrl%>" alt="diary photo">
-	        </c:if>          
-        </section>
-
-        <!-- 본문 -->
-        <section class="view-content">
-          <div class="content-box">
-            <pre class="content-text"><%=content%></pre>
-            <!-- 삭제 버튼: 이제 바로 삭제하지 않고 모달 오픈 -->
-          <button type="button" class="trash-btn" onclick="openDeleteModal()" aria-label="삭제"></button>
           </div>
-        </section>
 
-        
+          <section class="content-area">
+            <div class="content-box">
+              <textarea name="content" class="diary-input" required><%=contentVal%></textarea>
+            </div>
+          </section>
+
+        </form>
       </div>
     </main>
 
-    <!-- 우측 패널(공통 소식) -->
-    <aside class="desktop-side desktop-side--right">
-      <h2 class="panel-title">소식</h2>
+    <!-- 우측 패널: 메인과 동일(소식) -->
+      <aside class="desktop-side desktop-side--right">
+         <h2 class="panel-title">소식</h2>
 
-      <div class="news-list">
-        <c:forEach var="bean" items="${otherUserBeans}">
+         <div class="news-list">
+            <c:forEach var="bean" items="${otherUserBeans}">
 				<c:if test="${bean.getEmotion() == 1}">
 					<c:set var="path" value="/image/화남.png"></c:set>
 				</c:if>
@@ -330,41 +412,11 @@ if(emotion == null) emotion = 4;
 				</div>
 				</article>
 			</c:forEach>
-      </div>
-    </aside>
+         </div>
+      </aside>
+
   </div>
-
-  <!-- 삭제 확인 모달 (페이지 위 오버레이) -->
-  <div id="deleteOverlay" class="confirm-overlay" aria-hidden="true">
-    <div class="confirm-modal" role="dialog" aria-modal="true" aria-label="삭제 확인">
-      <div class="confirm-head">
-        <!-- 임시 SVG(빨간 휴지통) -->
-        <span class="confirm-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-               xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 3h6l1 2h4v2H4V5h4l1-2z" fill="#FF4D4F"/>
-            <path d="M7 9h2v10H7V9zm4 0h2v10h-2V9zm4 0h2v10h-2V9z" fill="#FF4D4F"/>
-            <path d="M6 7h12l-1 14H7L6 7z" stroke="#FF4D4F" stroke-width="1.2" fill="none"/>
-          </svg>
-        </span>
-        <span class="confirm-title">삭제하시겠습니까?</span>
-      </div>
-
-      <div class="confirm-actions">
-        <button id="deleteConfirmYes"
-                type="button"
-                class="confirm-btn confirm-yes"
-                data-delete-url="<%=request.getContextPath()%>/diary/DiaryDeleteCon.do?create_date=<%=date%>"
-                onclick="confirmDelete()">예</button>
-
-        <button type="button"
-                class="confirm-btn confirm-no"
-                onclick="closeDeleteModal()">아니요</button>
-      </div>
-    </div>
-  </div>
-
-<script>
+  <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 1. 데이터 준비
     const monthData = [
@@ -397,13 +449,13 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // 3. 이미지 객체 생성 및 로드
-    const moodSrcs = [
-        '<%=request.getContextPath()%>/image/화남.png',
-        '<%=request.getContextPath()%>/image/안좋음.png',
-        '<%=request.getContextPath()%>/image/무표정.png',
-        '<%=request.getContextPath()%>/image/웃음.png',
-        '<%=request.getContextPath()%>/image/빵긋.png'
-    ];
+     const moodSrcs = [
+    '<%=request.getContextPath()%>/resources/mood/mood1.png',
+    '<%=request.getContextPath()%>/resources/mood/mood2.png',
+    '<%=request.getContextPath()%>/resources/mood/mood3.png',
+    '<%=request.getContextPath()%>/resources/mood/mood4.png',
+    '<%=request.getContextPath()%>/resources/mood/mood5.png'
+  ];
     
     const moodImgs = moodSrcs.map(src => {
         const img = new Image();
@@ -463,8 +515,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-
-
 </body>
 </html>

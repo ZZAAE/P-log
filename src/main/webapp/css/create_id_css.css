@@ -1,0 +1,209 @@
+/* ==================================================
+   Signup Card Layout (로그인 CSS와 동일 톤)
+================================================== */
+.signup-card {
+  /* 🔥 웹/아이패드 가로 확장 */
+  width: clamp(560px, 70vw, 760px);
+  min-height: min(720px, 92vh);
+
+  background: #fff;
+  border: none;
+  border-radius: 20px;
+
+  padding: 40px 64px 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.12);
+  margin: 0 auto;
+}
+
+/* 폼 레이아웃 안정화 */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+/* ==================================================
+   Form Groups
+================================================== */
+.form-group {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 입력창: 300px 고정 제거 → 카드 폭에 맞춤 */
+.input-field {
+  width: 100%;
+  height: 45px;
+  margin: 0 auto;
+  padding: 0 14px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-field:focus {
+  background: #fff;
+  border-color: #000;
+  box-shadow: 0 0 0 4px rgba(0,0,0,.05);
+}
+
+/* ==================================================
+   Row Layout
+================================================== */
+/* ✅ 300px 고정 제거 → 100% */
+.flex-row {
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+/* 기존처럼 비율 유지 (고정 px 대신 비율) */
+.code-select { width: 30% !important; }
+.phone-input { width: 70% !important; }
+
+.birth-gender-row {
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+/* 비율 유지 */
+.birth-box { flex: 1.6; }
+.gender-box { flex: 1; }
+
+select.input-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4L6 8L10 4' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* ==================================================
+   Buttons (하단 밀착)
+================================================== */
+.btn-area {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.btn-submit {
+  width: 100%;
+  height: 48px;
+  margin: 0 auto;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  width: 100%;
+  height: 48px;
+  margin: 0 auto;
+  background: #fff;
+  color: #b3b3b3;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ==================================================
+   Desktop Wide (>= 1200)
+   - 데스크탑에서 더 시원하게
+================================================== */
+@media (min-width: 1200px) {
+  .signup-card {
+    width: 820px;
+    padding: 40px 72px 30px;
+  }
+}
+
+/* ==================================================
+   PC (로그인과 동일: scale 제거)
+================================================== */
+@media (min-width: 1024px) {
+  .signup-card { transform: none; }
+}
+
+/* ==================================================
+   🔥 Mobile (<= 430px)
+   - 회원가입 페이지는 화면 전체로
+================================================== */
+@media (max-width: 430px) {
+
+  /* 로그인 CSS의 login-page(center) 덮어쓰기 */
+  .signup-page.login-page {
+    min-height: 100vh;
+    padding: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    background: #fff;
+  }
+
+  .signup-card {
+    width: 100% !important;
+    min-height: 100vh !important;
+
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    padding: 64px 24px 40px !important;
+    margin: 0 !important;
+  }
+
+  .input-field,
+  .btn-submit,
+  .btn-cancel,
+  .flex-row,
+  .birth-gender-row {
+    width: 100% !important;
+  }
+
+  .flex-row,
+  .birth-gender-row {
+    gap: 6px;
+  }
+
+  /* 모바일에서 비율 유지 */
+  .code-select { width: 30% !important; }
+  .phone-input { width: 70% !important; }
+}
+/* ==================================================
+   🔥 iPad Pro 전용 (11", 12.9")
+   - 가로 / 세로 더 크게
+================================================== */
+@media (min-width: 1024px) and (max-width: 1366px) 
+       and (orientation: portrait),
+       (min-width: 1366px) and (max-width: 1366px) 
+       and (orientation: landscape) {
+
+  .signup-card {
+    width: 900px;              /* 🔥 가로 확장 */
+    min-height: 820px;         /* 🔥 세로 확장 */
+    padding: 48px 80px 40px;   /* 여백도 같이 증가 */
+  }
+}

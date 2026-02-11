@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,17 +15,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+
 
 import image.ImageDAO;
 import image.ImageinfoDTO;
 
 @MultipartConfig
-@WebServlet("/DiaryWriteProc.do")
+@WebServlet("/diary/DiaryWriteCon.do")
 public class DiaryWriteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		reqPro(request, response);
 	}
@@ -34,49 +36,64 @@ public class DiaryWriteCon extends HttpServlet {
 	}
 	
 	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("UTF-8");
 		
-		//DB단에서 시퀀스로 업데이트 해야함
-		//int diary_id = Integer.parseInt(request.getParameter("diary_id"));
-		String user_id = request.getParameter("user_id");
-		int advise_id = Integer.parseInt(request.getParameter("advise_id"));
+		System.out.println("DiaryWriteCon 진입");
+		HttpSession session = request.getSession();  
+		
+		String user_id = (String)session.getAttribute("user_id");
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
-		//String image_id = request.getParameter("image_id");
 		String create_date = request.getParameter("create_date");
-		
-		String path = "../resources/img";
-		
 		Part imgFile = request.getPart("file");
+		int advise_id = emotion*1000 + (int)(Math.random()*10) + 1; 
+		
+		DiaryDAO dDao = new DiaryDAO();
+		ImageDAO iDao = new ImageDAO();
+		
+		String jspPath = request.getContextPath() + "/resources/img/";
+		String realPath = request.getServletContext().getRealPath("/resources/img/");
+		String fileName = "";
+		
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
-		String fileName = "";
 		
-		try {
-			fileName = System.nanoTime() + imgFile.getSubmittedFileName();
-			
-			File file = new File(path, fileName);
-			outputStream = new FileOutputStream(file);
-			byte[] buffer = new byte[1024];
-			
-			int length;
-			
-			while((length = fileContent.read(buffer))!= 1) {
-				outputStream.write(buffer,0,length);
+		if(!imgFile.getSubmittedFileName().equals("")) {
+			try {
+				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
+				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
+				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
+				fileName = pureFilename + "_" + System.nanoTime() + extentionName;
+				
+				File file = new File(realPath, fileName);
+				outputStream = new FileOutputStream(file);
+				byte[] buffer = new byte[1024];
+				
+				int length;
+				
+				while((length = fileContent.read(buffer))!= -1) {
+					outputStream.write(buffer,0,length);
+				}
+				
+				fileContent.close();
+				if(outputStream != null) {
+					outputStream.flush();
+					outputStream.close();
+				}
+				
+				ImageinfoDTO imgBean = new ImageinfoDTO();
+				imgBean.setImage_id(fileName);
+				imgBean.setImage_path(jspPath+fileName);
+				iDao.insertImageinfo(imgBean);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
 			}
-			
-			fileContent.close();
-			if(outputStream != null) {
-				outputStream.flush();
-				outputStream.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-	
 		
+			
 		DiaryinfoDTO bean = new DiaryinfoDTO();
 		
 		bean.setUser_id(user_id);
@@ -86,22 +103,17 @@ public class DiaryWriteCon extends HttpServlet {
 		bean.setImage_id(fileName);
 		bean.setCreate_date(create_date);
 		
-		DiaryDAO dDao = new DiaryDAO();
+		
 		dDao.insertDiaryInfo(bean);
+				
+		System.out.println("DiaryWriteCon.do의 create_date: " + create_date);
+		request.setAttribute("create_date", create_date);
 		
-		ImageinfoDTO imgBean = new ImageinfoDTO();
-		imgBean.setImage_id(fileName);
-		imgBean.setImage_path(path+"/"+fileName);
-		
-		ImageDAO iDao = new ImageDAO();
-		iDao.insertImageinfo(imgBean);		
-		
-		
-		request.setAttribute("user_id", user_id);
-		
-		RequestDispatcher dis = request.getRequestDispatcher("");
+		//소식기능을 위한 타유저 일기정보 리스트 받음
+	    List<DiaryinfoDTO> otherUserBeans = dDao.getOtherUserDiaryInfoList(user_id);
+	    //DiaryWrite jsp에게 일기정보리스트 넘겨줌
+	    request.setAttribute("otherUserBeans", otherUserBeans);
+		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);
 	}
-	
-
 }

@@ -1,0 +1,179 @@
+@charset "UTF-8";
+
+/* 기본 */
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, "Inter", Arial, sans-serif;
+  background:#fff;
+  color:#111;
+}
+
+/* 페이지(가운데 정렬) */
+.page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:20px 0;
+}
+
+/* 카드 = 폰 프레임 */
+.card{
+  width:390px;
+  min-height:844px;
+  background:#fff;
+  padding:20px 18px;
+}
+
+/* 상단 제목 */
+.page-title{
+  font-size:12px;
+  color:#bdbdbd;
+  margin:4px 0 12px 4px;
+  font-weight:500;
+}
+
+/* 프로필 */
+.profile{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  margin-bottom:25px;
+}
+
+.avatar{
+  width:73px;
+  height:73px;
+  border-radius:50%;
+  background:#efefef;
+  position:relative;
+}
+
+/* 사람 아이콘 */
+.avatar::before{
+  content:"";
+  position:absolute;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#9e9e9e;
+}
+.avatar::after{
+  content:"";
+  position:absolute;
+  top:40px;
+  left:50%;
+  transform:translateX(-50%);
+  width:38px;
+  height:22px;
+  border-radius:22px 22px 10px 10px;
+  background:#9e9e9e;
+}
+
+.name{
+  font-size:18px;
+  font-weight:700;
+}
+
+/* 폼 가운데 폭 */
+.form{
+  width:85%;
+  margin: 6px auto 0;
+}
+
+/* 필드 간격 */
+.field{
+  margin-bottom:18px;
+}
+
+.label{
+  display:block;
+  font-size:14px;
+  font-weight:600;
+  margin:0 0 8px;
+}
+
+/* 아이디(텍스트 표시 줄) */
+.static-row{
+  width:100%;
+  height:44px;
+  border:1px solid #e5e5e5;
+  background:#f3f3f3;
+  border-radius:6px;
+  padding:0 14px;
+  display:flex;
+  align-items:center;
+}
+.static-text{
+  font-size:14px;
+  color:#222;
+}
+
+/* input */
+.input{
+  width:100%;
+  height:44px;
+  border:1px solid #e5e5e5;
+  background:#f3f3f3;
+  border-radius:6px;
+  padding:0 14px;
+  outline:none;
+  font-size:14px;
+  color:#222;
+}
+.input:focus{
+  border-color:#cfcfcf;
+  background:#f6f6f6;
+}
+
+/* 성별 라디오 */
+.radio-row{
+  display:flex;
+  gap:26px;
+  align-items:center;
+  margin-top:10px;
+}
+.radio{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  font-weight:600;
+}
+.radio input{
+  width:16px;
+  height:16px;
+}
+
+/* 버튼 */
+.btn-row{
+  display:flex;
+  gap:16px;
+  margin-top:50px;
+}
+
+.btn{
+  flex:1;
+  height:48px;
+  border-radius:8px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.btn-primary{
+  border:1px solid #000;
+  background:#000;
+  color:#fff;
+}
+
+.btn-ghost{
+  border:1px solid #9e9e9e;
+  background:#fff;
+  color:#222;
+}

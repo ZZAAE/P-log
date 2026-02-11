@@ -2,6 +2,11 @@ package diary;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,10 +14,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import image.ImageDAO;
 
-@WebServlet("/DiaryDeleteProc.do")
+@WebServlet("/diary/DiaryDeleteCon.do")
+
 public class DiaryDeleteCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -28,15 +35,43 @@ public class DiaryDeleteCon extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		
 		DiaryDAO dDao = new DiaryDAO();
+		ImageDAO iDao = new ImageDAO();
 		
-		String user_id = request.getParameter("user_id");
+		HttpSession session = request.getSession();  		
+		String user_id = (String)session.getAttribute("user_id");
 		String create_date = request.getParameter("create_date");
-		
+					
 		int diary_id = dDao.getDiaryID(user_id, create_date);
+			
+		DiaryinfoDTO bean = dDao.getDiaryInfo(diary_id);
+		
+		String image_id = bean.getImage_id();
+		if(image_id != null) {
+			String realPath = request.getServletContext().getRealPath("/resources/img/"+image_id);
+			Path oldFilePath = Paths.get(realPath);
+			try {
+				Files.delete(oldFilePath);
+			}
+			catch(NoSuchFileException e){
+				System.out.println("삭제하려는 파일이 존재하지 않음");
+			}
+			catch (IOException e) {            
+				e.printStackTrace();
+			}
+		}
 		
 		dDao.deleteDirayInfo(diary_id);
+		if(image_id != null) {
+			iDao.deleteImageinfo(image_id);
+		}
 		
-		RequestDispatcher dis = request.getRequestDispatcher("");
-		
+		response.setContentType("text/html; charset=UTF-8");
+	    PrintWriter out = response.getWriter();
+	    out.println("<script>alert('일기가 삭제 되었습니다!'); location.href='" + request.getContextPath() + "/diary/CalendarMain.do';</script>");
+	    out.flush();
+	    out.close();
+				
+//		RequestDispatcher dis = request.getRequestDispatcher("CalendarMain.do");
+//		dis.forward(request, response);		
 	}
 }
