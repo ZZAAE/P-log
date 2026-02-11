@@ -273,7 +273,9 @@ if(emotion == null) emotion = 4;
 
         <!-- 이미지 -->
         <section class="view-photo">
-          <img src="<%=imageUrl%>" alt="diary photo">
+	        <c:if test="${!imagePath.isEmpty()}">
+	        	<img src="<%=imageUrl%>" alt="diary photo">
+	        </c:if>          
         </section>
 
         <!-- 본문 -->
