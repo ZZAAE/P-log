@@ -28,130 +28,145 @@ import image.ImageinfoDTO;
 @MultipartConfig
 @WebServlet("/diary/DiaryUpdateCon.do")
 public class DiaryUpdateCon extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
        
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		reqPro(request, response);
-	}
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      reqPro(request, response);
+   }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		reqPro(request, response);
-	}
-	
-	protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
-				
-		HttpSession session = request.getSession();  		
-		String user_id = (String)session.getAttribute("user_id");
-		int emotion = Integer.parseInt(request.getParameter("emotion"));
-		String content = request.getParameter("content");
-		String create_date = request.getParameter("create_date");
-		int advise_id = 0;
-		
-		DiaryDAO dDao = new DiaryDAO();
-		ImageDAO iDao = new ImageDAO();
-		
-		int diary_id = dDao.getDiaryID(user_id, create_date);
-		DiaryinfoDTO bean = new DiaryinfoDTO();
-		if (emotion != bean.getEmotion()) {
-			advise_id = emotion * 1000 + (int) (Math.random() * 10) + 1;
-		} else {
-			advise_id = bean.getAdvise_id();
-		}
-					
-		String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
-		String prevImage_id = image_id;
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      reqPro(request, response);
+   }
+   
+   protected void reqPro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      request.setCharacterEncoding("utf-8");
+            
+      HttpSession session = request.getSession();        
+      String user_id = (String)session.getAttribute("user_id");
+      int emotion = Integer.parseInt(request.getParameter("emotion"));
+      String content = request.getParameter("content");
+      String create_date = request.getParameter("create_date");
+      int advise_id = 0;
+      
+      DiaryDAO dDao = new DiaryDAO();
+      ImageDAO iDao = new ImageDAO();
+      
+      int diary_id = dDao.getDiaryID(user_id, create_date);
+      DiaryinfoDTO bean = new DiaryinfoDTO();
+      if (emotion != bean.getEmotion()) {
+         advise_id = emotion * 1000 + (int) (Math.random() * 10) + 1;
+      } else {
+         advise_id = bean.getAdvise_id();
+      }
+               
+      String image_id = dDao.getDiaryInfo(diary_id).getImage_id();
+      String prevImage_id = image_id;
 
-		String prevImage_path = request.getServletContext().getRealPath("/resources/img/") + prevImage_id;
-		
-		String jspPath = "";
-		String realPath = "";
-		String fileName = "";
-		Part imgFile = request.getPart("file");
-		if(imgFile != null) {
-			jspPath = request.getContextPath() + "/resources/img/";
-			realPath = request.getServletContext().getRealPath("/resources/img/");
-		}
-		
-		
-		
-		InputStream fileContent = imgFile.getInputStream();
-		OutputStream outputStream = null;
-		
-	
-		if(!imgFile.getSubmittedFileName().isEmpty())  {
-		//if(imgFile != null)  {
-			try {
-				int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
-				String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
-				String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
-				fileName = pureFilename  + "_" + System.nanoTime() + extentionName;
-				
-				File file = new File(realPath, fileName);
-				outputStream = new FileOutputStream(file);
-				byte[] buffer = new byte[1024];
-				
-				int length;
-				
-				while((length = fileContent.read(buffer))!= -1) {
-					outputStream.write(buffer,0,length);
-				}
-				
-				fileContent.close();
-				if(outputStream != null) {
-					outputStream.flush();
-					outputStream.close();
-				}
-				
-				ImageinfoDTO imgBean = new ImageinfoDTO();
-				imgBean.setImage_id(fileName);
-				imgBean.setImage_path(jspPath+fileName);
-				iDao.insertImageinfo(imgBean);
-				
-				//이미지 수정후 이전 파일 삭제
-				Path oldFilePath = Paths.get(prevImage_path);
-				try {
-					Files.delete(oldFilePath);					
-				}
-				catch(NoSuchFileException e){
-					System.out.println("삭제하려는 파일이 존재하지 않음");
-				}
-				catch (IOException e) {            
-					e.printStackTrace();
-				}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		bean.setDiary_id(diary_id);
-		bean.setUser_id(user_id);
-		bean.setAdvise_id(advise_id);
-		bean.setEmotion(emotion);
-		bean.setContent(content);
-		if(!imgFile.getSubmittedFileName().isEmpty()) {
-			bean.setImage_id(fileName);
-		}else {
-			bean.setImage_id(prevImage_id);
-		}
-			
-				
-		dDao.updateDiaryInfo(bean);
-		if(!imgFile.getSubmittedFileName().isEmpty())
-			iDao.deleteImageinfo(prevImage_id);
-		
-		request.setAttribute("user_id", user_id);
-		request.setAttribute("create_date", create_date);
-		
-		//소식기능을 위한 타유저 일기정보 리스트 받음
-	    List<DiaryinfoDTO> otherUserBeans = dDao.getOtherUserDiaryInfoList(user_id);
-	    //DiaryWrite jsp에게 일기정보리스트 넘겨줌
-	    request.setAttribute("otherUserBeans", otherUserBeans);
+      String prevImage_path = request.getServletContext().getRealPath("/resources/img/") + prevImage_id;
+      
+      String jspPath = "";
+      String realPath = "";
+      String fileName = "";
+      Part imgFile = request.getPart("file");
+      if(imgFile != null) {
+         jspPath = request.getContextPath() + "/resources/img/";
+         realPath = request.getServletContext().getRealPath("/resources/img/");
+      }
+      
+      //setAttribute에는 오브젝트만 넣을수 있기 때문에 bool타입은 못넣음. 그래서 String으로
+      String isImageDelete = (String)request.getParameter("isImageDelete");
+      System.out.println("isImageDelete: " + isImageDelete);
+      
+      InputStream fileContent = imgFile.getInputStream();
+      OutputStream outputStream = null;
+      
+   
+      if(!imgFile.getSubmittedFileName().isEmpty())  {
+         try {
+            int fileExtentionDotIndex = imgFile.getSubmittedFileName().lastIndexOf(".");
+            String pureFilename = imgFile.getSubmittedFileName().substring(0, fileExtentionDotIndex);
+            String extentionName = imgFile.getSubmittedFileName().substring(fileExtentionDotIndex);
+            fileName = pureFilename  + "_" + System.nanoTime() + extentionName;
+            
+            File file = new File(realPath, fileName);
+            outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            
+            int length;
+            
+            while((length = fileContent.read(buffer))!= -1) {
+               outputStream.write(buffer,0,length);
+            }
+            
+            fileContent.close();
+            if(outputStream != null) {
+               outputStream.flush();
+               outputStream.close();
+            }
+            
+            ImageinfoDTO imgBean = new ImageinfoDTO();
+            imgBean.setImage_id(fileName);
+            imgBean.setImage_path(jspPath+fileName);
+            iDao.insertImageinfo(imgBean);
+            
+            //이미지 수정후 이전 파일 삭제
+            Path oldFilePath = Paths.get(prevImage_path);
+            try {
+               Files.delete(oldFilePath);               
+            }
+            catch(NoSuchFileException e){
+               System.out.println("삭제하려는 파일이 존재하지 않음");
+            }
+            catch (IOException e) {            
+               e.printStackTrace();
+            }
+            
+         } catch (Exception e) {
+            e.printStackTrace();
+            return;
+         }
+      }
+      else if(isImageDelete.equals("true")) {
+         Path oldFilePath = Paths.get(prevImage_path);
+         try {
+            Files.delete(oldFilePath);               
+         }
+         catch(NoSuchFileException e){
+            System.out.println("삭제하려는 파일이 존재하지 않음");
+         }
+         catch (IOException e) {            
+            e.printStackTrace();
+         }
+      }
+      
+      bean.setDiary_id(diary_id);
+      bean.setUser_id(user_id);
+      bean.setAdvise_id(advise_id);
+      bean.setEmotion(emotion);
+      bean.setContent(content);
+      if(!imgFile.getSubmittedFileName().isEmpty()) {
+         bean.setImage_id(fileName);
+      }else if(isImageDelete.equals("true")){
+         bean.setImage_id(null);
+      }else {
+         bean.setImage_id(prevImage_id);
+      }
+         
+            
+      dDao.updateDiaryInfo(bean);
+      if(!imgFile.getSubmittedFileName().isEmpty() || isImageDelete.equals("true"))
+         iDao.deleteImageinfo(prevImage_id);
+      
+      request.setAttribute("user_id", user_id);
+      request.setAttribute("create_date", create_date);
+      
+      //소식기능을 위한 타유저 일기정보 리스트 받음
+       List<DiaryinfoDTO> otherUserBeans = dDao.getOtherUserDiaryInfoList(user_id);
+       //DiaryWrite jsp에게 일기정보리스트 넘겨줌
+       request.setAttribute("otherUserBeans", otherUserBeans);
 
-		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
-		dis.forward(request, response);
-	}
+      RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
+      dis.forward(request, response);
+   }
 
 }

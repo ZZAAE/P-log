@@ -101,6 +101,11 @@ header { background: transparent; }
 .calendar tbody tr td:nth-child(7) a { color: #E64B4B; }
 .calendar tbody td.inactive a { color: #D0D0D0; background: transparent; }
 
+.calendar tbody td.active a {
+  outline: 2px solid rgb(255 64 64 / 90%);
+  outline-offset:-2px;
+}
+
 /* ========== CENTER META ========== */
 .center-meta{
   text-align: left;
