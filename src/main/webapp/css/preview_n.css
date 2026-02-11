@@ -122,11 +122,12 @@
 }
 .view-content .content-box{
   width:100%;
-  height:410px;
+  height:439px;
   background:#efefef;
   border-radius:7px;
   overflow:hidden;
   padding:18px;
+  position: relative;
 }
 .content-text{
   font-family: inherit;
@@ -147,7 +148,6 @@
   background:#000;
   border:none;
   cursor:pointer;
-  margin: 0 20px;
 }
 .trash-btn:before{
   content:'';

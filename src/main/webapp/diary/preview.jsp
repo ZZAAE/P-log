@@ -163,8 +163,14 @@ if(emotion == null) emotion = 4;
     <aside class="desktop-side desktop-side--left">
       <div class="left-cal">
         <div class="left-cal__nav">
-          <div class="left-cal__title"><%=year%>. <%=String.format("%02d",month)%>.</div>
-        </div>
+               <a class="left-cal__btn"
+                  href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d", (month-1))+"-01") %>">‹</a>
+               <div class="left-cal__title"><%=year%>.
+                  <%=String.format("%02d", month)%>.
+               </div>
+               <a class="left-cal__btn"
+                  href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d", (month+1))+"-01") %>">›</a>
+            </div>
 
         <div class="left-cal__dow">
           <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
@@ -228,7 +234,7 @@ if(emotion == null) emotion = 4;
       </div>
 
       <div class="panel-card panel-card--month">
-        <p class="panel-cardTitle"><%=month %>월 기분 현황</p>
+        <p class="panel-cardTitle"><%=month %>월 달 기분 리포트</p>
         <div class="chart-container">
     		<canvas id="monthChart"></canvas>
 		</div>
@@ -282,11 +288,12 @@ if(emotion == null) emotion = 4;
         <section class="view-content">
           <div class="content-box">
             <pre class="content-text"><%=content%></pre>
+            <!-- 삭제 버튼: 이제 바로 삭제하지 않고 모달 오픈 -->
+          <button type="button" class="trash-btn" onclick="openDeleteModal()" aria-label="삭제"></button>
           </div>
         </section>
 
-        <!-- 삭제 버튼: 이제 바로 삭제하지 않고 모달 오픈 -->
-        <button type="button" class="trash-btn" onclick="openDeleteModal()" aria-label="삭제"></button>
+        
       </div>
     </main>
 

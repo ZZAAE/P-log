@@ -1,11 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-   pageEncoding="UTF-8"%>
+<%@page import="java.util.Vector"%>
+<%@page import="advise.AdviseinfoDAO"%>
+<%@ page import="image.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page import="java.util.Calendar"%>
-<%@page import="diary.DiaryinfoDTO" %>
+<%@ page import="diary.DiaryinfoDTO" %>
 <%@ page import="java.util.List" %>
-<%@page import="java.util.Vector"%>
 <%
 request.setCharacterEncoding("UTF-8");
 String userId = (String)session.getAttribute("user_id");
@@ -181,36 +182,36 @@ if (monthCounts == null) {
 
           int dayCount = weekMon - 1;
           for(int d=1; d<=lastDay; d++){
-            String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
-            String Fmonth = month < 10 ? "0"+month : String.valueOf(month);
-            String Fday = d < 10 ? "0"+d : String.valueOf(d);
-            String Cdate = year + "-" + Fmonth + "-" + Fday;
-            
-            DiaryinfoDTO foundDto = null;
-            if(bean != null){
-              for(DiaryinfoDTO dto : bean){
-                if(dto.getCreate_date().equals(Cdate)){
-                  foundDto = dto; break;
+              String todayClass = (year==ty && month==tm && d==td) ? " today" : "";
+              String Fmonth = month < 10 ? "0"+month : String.valueOf(month);
+              String Fday = d < 10 ? "0"+d : String.valueOf(d);
+              String Cdate = year + "-" + Fmonth + "-" + Fday;
+              
+              DiaryinfoDTO foundDto = null;
+              if(bean != null){
+                for(DiaryinfoDTO dto : bean){
+                  if(dto.getCreate_date().equals(Cdate)){
+                    foundDto = dto; break;
+                  }
                 }
               }
+              if(foundDto != null){
+              %>
+                  <a class="d emotion_<%=foundDto.getEmotion()%><%=todayClass%>"
+                     href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                     <%=d%>
+                  </a>
+              <%
+              } else {
+              %>
+                  <a class="d no_diary<%=todayClass%>"
+                     href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
+                     <%=d%>
+                  </a>
+              <%
+              }
+              dayCount++;
             }
-            if(foundDto != null){
-            %>
-                <a class="d emotion_<%=foundDto.getEmotion()%><%=todayClass%>"
-                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
-                   <%=d%>
-                </a>
-            <%
-            } else {
-            %>
-                <a class="d no_diary<%=todayClass%>"
-                   href="${pageContext.request.contextPath}/diary/Preview.do?selectedDate=<%=Cdate%>&year=<%=year%>&month=<%=month%>">
-                   <%=d%>
-                </a>
-            <%
-            }
-            dayCount++;
-          }
 
           // next month filler
           int remain = 1;
@@ -225,7 +226,7 @@ if (monthCounts == null) {
          </div>
 
          <div class="panel-cardA">
-            <p class="panel-cardTitle"><%=month%>월 달 기분 현황
+            <p class="panel-cardTitle"><%=month%>월 달 기분 리포트
             </p>
 
             <!-- ✅ calendar.css의 monthChart 레이아웃 규칙이 먹게끔 클래스 추가 -->
@@ -303,7 +304,7 @@ if (monthCounts == null) {
                   <!-- 내용 -->
 
                   <section class="content-area">
-                     <div class="content-box">
+                     <div class="content-box1">
                         <textarea name="content" class="diary-input"
                            placeholder="오늘 하루를 기록해보세요." required></textarea>
                      </div>

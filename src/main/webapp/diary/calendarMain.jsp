@@ -150,7 +150,7 @@ if (yShort != null) {
     </div>
 
     <div class="panel-cardA">
-      <p class="panel-cardTitle"><%=month%>월 달 기분 현황</p>
+      <p class="panel-cardTitle"><%=month%>월 달 기분 리포트</p>
 
       <!-- ✅ calendar.css의 monthChart 레이아웃 규칙이 먹게끔 클래스 추가 -->
       <div class="panel-month month-chart-wrap">

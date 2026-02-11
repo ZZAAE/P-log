@@ -233,8 +233,14 @@ window.addEventListener("DOMContentLoaded", ()=>{
     <aside class="desktop-side desktop-side--left">
       <div class="left-cal">
         <div class="left-cal__nav">
-          <div class="left-cal__title"><%=year%>. <%=String.format("%02d",month)%>.</div>
-        </div>
+               <a class="left-cal__btn"
+                  href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==1 ? (year-1)+"-12-01" : year+"-"+String.format("%02d", (month-1))+"-01") %>">‹</a>
+               <div class="left-cal__title"><%=year%>.
+                  <%=String.format("%02d", month)%>.
+               </div>
+               <a class="left-cal__btn"
+                  href="<%=request.getContextPath()%>/diary/diarywrite.jsp?selectedDate=<%= (month==12 ? (year+1)+"-01-01" : year+"-"+String.format("%02d", (month+1))+"-01") %>">›</a>
+            </div>
 
         <div class="left-cal__dow">
           <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
@@ -298,7 +304,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
       </div>
 
       <div class="panel-card panel-card--month">
-        <p class="panel-cardTitle"><%=month %>월 기분 현황</p>
+        <p class="panel-cardTitle"><%=month %>월 달 기분 리포트</p>
         <div class="chart-container">
           <canvas id="monthChart"></canvas>
       </div>
@@ -310,7 +316,6 @@ window.addEventListener("DOMContentLoaded", ()=>{
       <div class="phone">
 
         <header class="write-top">
-          <button type="button" class="icon-btn back" onclick="history.back()">‹</button>
 
           <div class="date-wrap">
             <div class="date-text"><%=date%></div>
@@ -318,9 +323,15 @@ window.addEventListener("DOMContentLoaded", ()=>{
           </div>
 
           <div class="actions">
-            <button type="button" class="icon-btn circle" onclick="openImage()">＋</button>
-            <button type="button" class="icon-btn circle" onclick="submitUpdate()">✓</button>
-          </div>
+                  <button type="button" class="icon-btn circle"
+                     onclick="openImage()">
+                     <i class="bi bi-plus"></i>
+                  </button>
+                  <button type="button" class="icon-btn circle"
+                     onclick="submitWrite()">
+                     <i class="bi bi-check2"></i>
+                  </button>
+               </div>
         </header>
 
         <form id="updateForm"
@@ -331,7 +342,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
           <input type="hidden" name="create_date" value="<%=date%>">
           <input type="hidden" name="emotion" id="emotion" value="<%=emotionVal%>">
 
-          <section class="emoji-row emoji-pick">
+          <section class="emoji-row emoji-pick" style="margin-bottom: 50px">
             <div class="emoji-btn" data-val="1"><img src="<%=request.getContextPath()%>/resources/mood/mood1.png"></div>
             <div class="emoji-btn" data-val="2"><img src="<%=request.getContextPath()%>/resources/mood/mood2.png"></div>
             <div class="emoji-btn" data-val="3"><img src="<%=request.getContextPath()%>/resources/mood/mood3.png"></div>

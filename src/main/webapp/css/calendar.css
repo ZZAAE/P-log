@@ -54,7 +54,7 @@ header { background: transparent; }
 .calendar {
   width: 308px;
   margin: 0 auto 18px;
-  height: 400px;
+  height: 380px;
 }
 
 .calendar table {
