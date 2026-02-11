@@ -276,8 +276,8 @@ if(emotion == null) emotion = 4;
             <% } %>
           
         </section>
-
-        <!-- 이미지 -->
+		
+			 <!-- 이미지 -->
         <section class="view-photo">
 	        <c:if test="${!imagePath.isEmpty()}">
 	        	<img src="<%=imageUrl%>" alt="diary photo">
@@ -292,46 +292,64 @@ if(emotion == null) emotion = 4;
           <button type="button" class="trash-btn" onclick="openDeleteModal()" aria-label="삭제"></button>
           </div>
         </section>
-
-        
+		
+       
       </div>
     </main>
 
-    <!-- 우측 패널(공통 소식) -->
-    <aside class="desktop-side desktop-side--right">
-      <h2 class="panel-title">소식</h2>
-
-      <div class="news-list">
-        <c:forEach var="bean" items="${otherUserBeans}">
-				<c:if test="${bean.getEmotion() == 1}">
-					<c:set var="path" value="/image/화남.png"></c:set>
-				</c:if>
-				<c:if test="${bean.getEmotion() == 2}">
-					<c:set var="path" value="/image/안좋음.png"></c:set>
-				</c:if>
-				<c:if test="${bean.getEmotion() == 3}">
-					<c:set var="path" value="/image/무표정.png"></c:set>
-				</c:if>
-				<c:if test="${bean.getEmotion() == 4}">
-					<c:set var="path" value="/image/웃음.png"></c:set>
-				</c:if>
-				<c:if test="${bean.getEmotion() == 5}">
-					<c:set var="path" value="/image/빵긋.png"></c:set>
-				</c:if>
-				<article class="news-card">
-				<div class="news-avatar" aria-hidden="true"></div>
-				<div class="news-body">
-					<div class="news-name">${bean.getUser_id()} 님</div>
-					<div class="news-text">
-						<span class="news-message"> ${bean.getContent()}</span> <span class="news-emoji"> 
-							<img src="${pageContext.request.contextPath}${path}" alt="화남">
-						</span>
-					</div>
-				</div>
-				</article>
-			</c:forEach>
-      </div>
-    </aside>
+    <!-- 우측 패널: 소식 -->
+	<aside class="desktop-side desktop-side--right">
+	  <h2 class="panel-title">소식</h2>
+	
+	  <div class="news-list">
+	
+	    <!-- 소식이 없을 때 -->
+	    <c:if test="${empty otherUserBeans}">
+	      <div class="news-empty">
+	        표시할 소식이 없습니다.
+	      </div>
+	    </c:if>
+	
+	    <!-- 소식이 있을 때 -->
+	    <c:if test="${not empty otherUserBeans}">
+	      <c:forEach var="bean" items="${otherUserBeans}">
+	        <c:choose>
+	          <c:when test="${bean.getEmotion() == 1}">
+	            <c:set var="path" value="/image/화남.png"/>
+	          </c:when>
+	          <c:when test="${bean.getEmotion() == 2}">
+	            <c:set var="path" value="/image/안좋음.png"/>
+	          </c:when>
+	          <c:when test="${bean.getEmotion() == 3}">
+	            <c:set var="path" value="/image/무표정.png"/>
+	          </c:when>
+	          <c:when test="${bean.getEmotion() == 4}">
+	            <c:set var="path" value="/image/웃음.png"/>
+	          </c:when>
+	          <c:otherwise>
+	            <c:set var="path" value="/image/빵긋.png"/>
+	          </c:otherwise>
+	        </c:choose>
+	
+	        <article class="news-card">
+	          <div class="news-avatar" aria-hidden="true">
+	          <i class="bi bi-person-fill"></i>
+	          </div>
+	          <div class="news-body">
+	            <div class="news-name">${bean.getUser_id()} 님</div>
+	            <div class="news-text">
+	              <span class="news-message">${bean.getContent()}</span>
+	              <span class="news-emoji">
+	                <img src="${pageContext.request.contextPath}${path}" alt="emotion">
+	              </span>
+	            </div>
+	          </div>
+	        </article>
+	      </c:forEach>
+	    </c:if>
+	
+	  </div>
+	</aside>
   </div>
 
   <!-- 삭제 확인 모달 (페이지 위 오버레이) -->
