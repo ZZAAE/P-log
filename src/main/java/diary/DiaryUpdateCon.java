@@ -48,6 +48,14 @@ public class DiaryUpdateCon extends HttpServlet {
 		String create_date = request.getParameter("create_date");
 		int advise_id = 0;
 		
+		String is_share = request.getParameter("is_share");
+		if(is_share == null) {
+			is_share = "N";
+		}else
+		{
+			is_share = "Y";
+		}
+		
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
 		
@@ -144,6 +152,7 @@ public class DiaryUpdateCon extends HttpServlet {
 		bean.setAdvise_id(advise_id);
 		bean.setEmotion(emotion);
 		bean.setContent(content);
+		bean.setIs_share(is_share);
 		if(!imgFile.getSubmittedFileName().isEmpty()) {
 			bean.setImage_id(fileName);
 		}else if(isImageDelete.equals("true")){
@@ -152,7 +161,7 @@ public class DiaryUpdateCon extends HttpServlet {
 			bean.setImage_id(prevImage_id);
 		}
 			
-				
+		System.out.println("update java is_share: " + bean.getIs_share());		
 		dDao.updateDiaryInfo(bean);
 		if(!imgFile.getSubmittedFileName().isEmpty() || isImageDelete.equals("true"))
 			iDao.deleteImageinfo(prevImage_id);

@@ -34,8 +34,8 @@ public class DiaryDAO {
 	public void insertDiaryInfo(DiaryinfoDTO dDto) {
 		try {
 			connect();
-			String query = "insert into diaryinfo (DIARY_ID, USER_ID, ADVISE_ID, EMOTION, CONTENT, IMAGE_ID, CREATE_DATE) "
-                    + "values (diary_seq.nextval, ?, ?, ?, ?, ?, ?)";
+			String query = "insert into diaryinfo (DIARY_ID, USER_ID, ADVISE_ID, EMOTION, CONTENT, IMAGE_ID, CREATE_DATE, IS_SHARE) "
+                    + "values (diary_seq.nextval, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, dDto.getUser_id());
 			pstmt.setInt(2, dDto.getAdvise_id());
@@ -44,6 +44,7 @@ public class DiaryDAO {
 			pstmt.setString(5, dDto.getImage_id());
 			Date date = Date.valueOf(dDto.getCreate_date());
 			pstmt.setDate(6, date);
+			pstmt.setString(7, dDto.getIs_share());
 			int result = pstmt.executeUpdate();
 			con.close();
 			System.out.println("insert 수행 결과: " + result);
@@ -145,13 +146,14 @@ public class DiaryDAO {
 	public void updateDiaryInfo(DiaryinfoDTO dDto) {
 		try {
 			connect();
-			String query = "update diaryinfo set advise_id=?, emotion=?, content=?, image_id=? where diary_id=?";
+			String query = "update diaryinfo set advise_id=?, emotion=?, content=?, image_id=?, is_share=? where diary_id=?";
 			pstmt = con.prepareStatement(query);
 			pstmt.setInt(1, dDto.getAdvise_id());
 			pstmt.setInt(2, dDto.getEmotion());
 			pstmt.setString(3, dDto.getContent());
 			pstmt.setString(4, dDto.getImage_id());
-			pstmt.setInt(5, dDto.getDiary_id());
+			pstmt.setString(5, dDto.getIs_share());
+			pstmt.setInt(6, dDto.getDiary_id());
 			pstmt.executeUpdate();
 			con.close();
 			

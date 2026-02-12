@@ -9,6 +9,7 @@ public class DiaryinfoDTO {
 	private String content;
 	private String image_id;
 	private String create_date;
+	private String is_share;
 	
 	public int getDiary_id() {
 		return diary_id;
@@ -51,5 +52,11 @@ public class DiaryinfoDTO {
 	}
 	public void setCreate_date(String create_date) {
 		this.create_date = create_date;
+	}
+	public void setIs_share(String is_share) {
+		this.is_share = is_share;
+	}
+	public String getIs_share() {
+		return is_share;
 	}
 }

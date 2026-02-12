@@ -201,6 +201,34 @@ window.addEventListener("DOMContentLoaded", ()=>{
 
   render();
 });
+
+//✅ 토글 상태에 따라 hint 문구 업데이트
+function updateHint(isPublic){
+  const hint = document.getElementById("publicHint");
+  if(!hint) return;
+
+ 
+}
+
+// ✅ 공개/비공개 토글 confirm + hidden 값 변경
+function confirmPublicToggle(toggle){
+  const toPublic = toggle.checked; // true=공개
+  const msg = toPublic ? "작성할 일기 공개" : "작성할 일기를 비공개";
+
+  if(!confirm(msg)){
+    toggle.checked = !toPublic; // 취소하면 원복
+    return;
+  }
+
+  const hidden = document.getElementById("is_public");
+  if(hidden) hidden.value = toPublic ? "1" : "0";
+
+  const label = document.getElementById("publicText");
+  if(label) label.innerText = toPublic ? "일기공개" : "일기비공개";
+
+  // ✅ 흐린 문구 변경
+  updateHint(toPublic);
+}
 </script>
 </head>
 
@@ -392,17 +420,28 @@ window.addEventListener("DOMContentLoaded", ()=>{
       </div>
     </main>
 
-    <!-- 우측 패널: 메인과 동일(소식) -->
-      <!-- 우측 패널: 소식 -->
-   <aside class="desktop-side desktop-side--right">
-     <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
-   
-     <div class="news-list">
-   
+  <!-- 우측 패널: 소식 -->
+      <aside class="desktop-side desktop-side--right">
+         <!-- ✅ 일기공개 토글이 공유 스토리 위로 올라감 -->
+         <div class="news-toolbar">
+            <span class="news-toolbar__label" id="publicText">일기공개</span> <input
+               type="checkbox" id="publicToggle" name="is_share" class="toggle" checked
+               form="updateForm" onchange="confirmPublicToggle(this)"> <label
+               for="publicToggle" class="toggle-ui"></label>
+         </div>
+         <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
+
+
+
+         <!-- (선택) 흐린 안내문구 자리: 네가 updateHint 쓰려면 이 span이 있어야 함 -->
+         <div class="news-hint" id="publicHint"></div>
+
+
+         <div class="news-list">
        <!-- 소식이 없을 때 -->
        <c:if test="${empty otherUserBeans}">
          <div class="news-empty">
-           스토리가 없습니다.
+           공유스토리가 없습니다.
          </div>
        </c:if>
    

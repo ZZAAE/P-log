@@ -45,9 +45,16 @@ public class DiaryWriteCon extends HttpServlet {
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
-		String is_share = request.getParameter("is_share");
 		Part imgFile = request.getPart("file");
 		int advise_id = emotion*1000 + (int)(Math.random()*10) + 1; 
+		
+		String is_share = request.getParameter("is_share");
+		if(is_share == null) {
+			is_share = "N";
+		}else
+		{
+			is_share = "Y";
+		}
 		
 		DiaryDAO dDao = new DiaryDAO();
 		ImageDAO iDao = new ImageDAO();
@@ -56,6 +63,7 @@ public class DiaryWriteCon extends HttpServlet {
 		String realPath = request.getServletContext().getRealPath("/resources/img/");
 		String fileName = "";
 		
+		response.setStatus(HttpServletResponse.SC_OK);
 		
 		InputStream fileContent = imgFile.getInputStream();
 		OutputStream outputStream = null;
@@ -103,6 +111,7 @@ public class DiaryWriteCon extends HttpServlet {
 		bean.setContent(content);
 		bean.setImage_id(fileName);
 		bean.setCreate_date(create_date);
+		bean.setIs_share(is_share);
 		
 		
 		dDao.insertDiaryInfo(bean);
@@ -117,4 +126,6 @@ public class DiaryWriteCon extends HttpServlet {
 		RequestDispatcher dis = request.getRequestDispatcher("Preview.do");
 		dis.forward(request, response);
 	}
+	
+	
 }
