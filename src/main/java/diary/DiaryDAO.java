@@ -222,7 +222,7 @@ public class DiaryDAO {
 			connect();
 			//String query = "select * from diaryinfo where user_id not in ?";
 			String query = "select * from diaryinfo WHERE user_id <> ? "
-					+ "AND create_date >= TRUNC(SYSDATE) "
+					+ "AND create_date >= TRUNC(SYSDATE) AND is_share like 'Y' "
 					+ "AND create_date < TRUNC(SYSDATE) + 1 ORDER BY create_date DESC, diary_id DESC";
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, user_id);

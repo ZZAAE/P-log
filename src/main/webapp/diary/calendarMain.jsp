@@ -175,7 +175,7 @@ if (yShort != null) {
           <table>
             <thead>
               <tr>
-                <th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th>
+                <th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th>
               </tr>
             </thead>
             <tbody>
@@ -271,14 +271,14 @@ if (yShort != null) {
 
  <!-- 우측 패널: 소식 -->
    <aside class="desktop-side desktop-side--right">
-     <h2 class="panel-title">소식</h2>
+     <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
    
      <div class="news-list">
    
        <!-- 소식이 없을 때 -->
        <c:if test="${empty otherUserBeans}">
          <div class="news-empty">
-           표시할 소식이 없습니다.
+           스토리가 없습니다.
          </div>
        </c:if>
    
@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  const weekLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const weekLabels = ['월','화','수','목','금','토','일'];
 
   const weekEmotions = (function(){
     <% int[] we = (int[]) request.getAttribute("weekEmotions");

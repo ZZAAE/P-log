@@ -45,6 +45,7 @@ public class DiaryWriteCon extends HttpServlet {
 		int emotion = Integer.parseInt(request.getParameter("emotion"));
 		String content = request.getParameter("content");
 		String create_date = request.getParameter("create_date");
+		String is_share = request.getParameter("is_share");
 		Part imgFile = request.getPart("file");
 		int advise_id = emotion*1000 + (int)(Math.random()*10) + 1; 
 		

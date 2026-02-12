@@ -253,7 +253,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
             </div>
 
         <div class="left-cal__dow">
-          <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+          <div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div><div>일</div>
         </div>
 
         <div class="left-cal__grid">
@@ -333,14 +333,13 @@ window.addEventListener("DOMContentLoaded", ()=>{
           </div>
 
           <div class="actions">
-                  <button type="button" class="icon-btn circle"
+                  <button type="button" class="icon-btn circle1"
                      onclick="openImage()">
-                     <i class="bi bi-plus"></i>
+                    <i class="bi bi-card-image"></i>
                   </button>
-                  <button type="button" class="icon-btn circle"
-                  	onclick="submitUpdate()">
-                     <!-- onclick="submitWrite()"> -->
-                     <i class="bi bi-check2"></i>
+                  <button type="button" class="icon-btn circle2"
+                     onclick="submitUpdate()">
+                     <i class="bi bi-check-lg"></i>
                   </button>
                </div>
         </header>
@@ -373,7 +372,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
                 else if(!showPath.startsWith("http")) showPath = request.getContextPath() + "/" + showPath;
               }
             %>
-			<button type="button" class="icon-btn circle delete-btn" onclick="deleteImage()">
+			<button type="button" class="icon-btn circle2 delete-btn" onclick="deleteImage()">
             	<i class="bi bi-x"></i>
             </button>
             <% if(hasOldImg){ %>
@@ -396,14 +395,14 @@ window.addEventListener("DOMContentLoaded", ()=>{
     <!-- 우측 패널: 메인과 동일(소식) -->
       <!-- 우측 패널: 소식 -->
    <aside class="desktop-side desktop-side--right">
-     <h2 class="panel-title">소식</h2>
+     <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
    
      <div class="news-list">
    
        <!-- 소식이 없을 때 -->
        <c:if test="${empty otherUserBeans}">
          <div class="news-empty">
-           표시할 소식이 없습니다.
+           스토리가 없습니다.
          </div>
        </c:if>
    
