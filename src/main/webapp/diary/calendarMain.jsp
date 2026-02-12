@@ -142,7 +142,7 @@ if (yShort != null) {
     <div class="panel-cardA">
       <p class="panel-subtitle">이번주 기분 추이</p>
       <div class="panel-chart">
-        <canvas id="weekChart"></canvas>
+        <canvas id="weekChart" width="644" height="410" style="display: block; box-sizing: border-box; height: 208.4px; width: 322.4px;"></canvas>
       </div>
       <p class="panel-score">
         기분 점수: <%= (request.getAttribute("weekScore")==null?0:request.getAttribute("weekScore")) %>/35점
@@ -269,9 +269,9 @@ if (yShort != null) {
     </div>
   </main>
 
-  <!-- 우측 패널: 소식 -->
+  <!-- 우측 패널: ❤️ 공유 스토리 ❤️ -->
 	<aside class="desktop-side desktop-side--right">
-	  <h2 class="panel-title">소식</h2>
+	  <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
 	
 	  <div class="news-list">
 	

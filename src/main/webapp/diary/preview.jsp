@@ -297,9 +297,9 @@ if(emotion == null) emotion = 4;
       </div>
     </main>
 
-    <!-- 우측 패널: 소식 -->
+    <!-- 우측 패널: ❤️ 공유 스토리 ❤️ -->
 	<aside class="desktop-side desktop-side--right">
-	  <h2 class="panel-title">소식</h2>
+	  <h2 class="panel-title">❤️ 공유 스토리 ❤️</h2>
 	
 	  <div class="news-list">
 	

@@ -181,8 +181,8 @@ public class CalendarMain extends HttpServlet {
             
             if(desc.contains("맑음")) {
                descImg = "../image/sunny.png";
-            } else if(desc.contains("흐림")) {
-               descImg = "../image/cloud.png";
+            } else if(desc.contains("흐림")|| desc.contains("구름")) {
+                descImg = "../image/cloud.png";
             } else if(desc.contains("비") || desc.contains("소나기")) {
                descImg = "../image/rain.png";
             } else if(desc.contains("눈")) {
