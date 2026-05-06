@@ -224,7 +224,7 @@ function confirmPublicToggle(toggle){
   if(hidden) hidden.value = toPublic ? "1" : "0";
 
   const label = document.getElementById("publicText");
-  if(label) label.innerText = toPublic ? "일기공개" : "일기비공개";
+  if(label) label.innerText = toPublic ? "일기 공개" : "일기 비공개";
 
   // ✅ 흐린 문구 변경
   updateHint(toPublic);
